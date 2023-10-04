@@ -1,0 +1,21 @@
+.btn {
+  min-height: 50px !important;
+
+  &.btn-primary {
+    background-color: #1C6F77 !important;
+    border-color: #1C6F77 !important;
+  }
+  &.btn-outline-primary {
+    border-color: #1C6F77 !important;
+    color: #1C6F77 !important;
+
+    &:hover {
+      background-color: #1C6F77 !important;
+      color: #FFFFFF !important;
+    }
+  }
+
+  &.btn-min-w-170px {
+    min-width: 170px !important;
+  }
+}

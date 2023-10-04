@@ -1,0 +1,54 @@
+.modal {
+  .modal-dialog {
+
+    &.min-w-modal-650px {
+      min-width: 650px;
+    }
+
+    &.mt-modal-195px {
+      margin-top: 170px;
+    }
+
+    .modal-content {
+      padding: 0 30px;
+
+      .modal-header {
+        padding: 25px 0;
+        border-color: #1C6F77;
+
+        .modal-title {
+          color: #1C6F77;
+        }
+
+        .btn-close {
+          background-image: url("/src/assets/icons/icon_close.svg");
+        }
+      }
+
+      .modal-body {
+        padding: 25px 0;
+
+        .first-tab-recover-password, .second-tab-recover-password, .third-tab-recover-password {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          margin-right: unset;
+          visibility: visible;
+          z-index: 999;
+
+          &.hidden {
+            right: -1000px;
+            position: absolute;
+            visibility: hidden;
+            z-index: -1;
+          }
+        }
+      }
+
+      .modal-footer {
+        padding: 15px 0;
+        border: none;
+      }
+    }
+  }
+}

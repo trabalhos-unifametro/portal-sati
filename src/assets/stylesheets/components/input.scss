@@ -1,0 +1,119 @@
+.input-group-template {
+  position: relative;
+  margin-bottom: 5px;
+
+  .suffix-icon-input, .prefix-icon-input {
+    background-color: transparent !important;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 999;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none !important;
+
+    .badge-rounded-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .prefix-icon-input {
+    left: 0;
+
+    &:before {
+      content : "";
+      position: absolute;
+      right: 0;
+      top: 5px;
+      bottom: 5px;
+      height: 40px;
+      border-right: 1px solid #dee2e6;
+    }
+  }
+
+  .suffix-icon-input {
+    right: 0;
+
+    .suffix-icon {
+      cursor: pointer;
+    }
+  }
+
+  input {
+    height: 50px !important;
+
+    &.has-prefix {
+      padding-left: 60px !important;
+    }
+
+    &.has-suffix {
+      padding-right: 40px !important;
+    }
+
+    &::placeholder {
+      color: rgba(0,0,0,0.3) !important;
+    }
+
+    &:focus {
+      border-color: #1C6F77;
+      box-shadow: 0 0 0 0.15rem rgba(28, 111, 119, 0.2);
+    }
+  }
+
+  .footer-group-input {
+    min-height: 18px;
+    text-align: start;
+    width: 100%;
+    font-size: 0.7em;
+    color: rgba(0,0,0,0.5);
+  }
+
+  &.error { // FF5050
+    .suffix-icon-input, .prefix-icon-input {
+      .badge-rounded-icon {
+        background-color: rgba(255, 80, 80, 0.3);
+
+        i, span {
+          color: #FF5050 !important;
+        }
+      }
+
+      i, span {
+        color: #FF5050 !important;
+      }
+    }
+
+    .prefix-icon-input {
+      &:before {
+        border-right: 1px solid rgba(255, 80, 80, 0.3);
+      }
+    }
+
+    input {
+      border-color: #FF5050;
+      color: #FF5050;
+
+      &::placeholder {
+        color: rgba(255, 80, 80, 0.3) !important;
+      }
+
+      &:focus {
+        border-color: #FF5050;
+        box-shadow: 0 0 0 0.15rem rgba(255, 80, 80, 0.3);
+      }
+    }
+
+    .footer-group-input {
+      color: #FF5050 !important;
+    }
+  }
+}

@@ -1,0 +1,68 @@
+.list-notifications {
+  background-color: transparent;
+  position: absolute;
+  top: 50px;
+  right: 50px;
+}
+.list-notifications .notification-template {
+  position: relative;
+  min-width: 400px;
+  min-height: 65px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.25);
+  background-color: #39D0FF;
+  display: flex;
+  align-items: center;
+}
+.list-notifications .notification-template:not(:last-child) {
+  margin-bottom: 20px;
+}
+.list-notifications .notification-template.success {
+  background-color: #5DD177;
+}
+.list-notifications .notification-template.danger {
+  background-color: #FF5050;
+}
+.list-notifications .notification-template.warning {
+  background-color: #DDCB29;
+}
+.list-notifications .notification-template.info {
+  background-color: #39D0FF;
+}
+.list-notifications .notification-template .suffix-icon-notification {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 65px;
+  position: absolute;
+  border-radius: 5px;
+  border-right: 2px solid rgba(255, 255, 255, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.list-notifications .notification-template .content-notification {
+  margin: 0 65px;
+  min-height: 65px;
+  min-width: 270px;
+  padding: 10px 15px;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+.list-notifications .notification-template .prefix-icon-notification {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 65px;
+  position: absolute;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.list-notifications .notification-template .prefix-icon-notification span {
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=notifications.css.map */

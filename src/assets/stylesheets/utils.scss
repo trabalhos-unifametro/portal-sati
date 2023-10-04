@@ -1,0 +1,36 @@
+$count: 25;
+
+@for $i from 1 through $count {
+  .rem-#{$i} {
+    font-size: calc($i/10)rem !important;
+  }
+  .em-#{$i} {
+    font-size: calc($i/10)em !important;
+  }
+
+  @if($i >= 10) {
+    .font-size-#{$i}px {
+      font-size: #{$i}px !important;
+    }
+  }
+
+  @if($i <= 10) {
+    .font-color-black-#{$i} {
+      color: rgba(0,0,0,calc($i/10)) !important;
+    }
+    .font-color-white-#{$i} {
+      color: rgba(255,255,255,calc($i/10)) !important;
+    }
+  }
+}
+
+.link-template-1 {
+  text-decoration: none;
+  transition: all 5s;
+
+  &:hover {
+    background-color: transparent;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}

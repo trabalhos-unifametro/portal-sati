@@ -1,0 +1,11 @@
+.input-group-template .input-group-text {
+  background-color: transparent !important;
+}
+.input-group-template input {
+  height: 50px !important;
+}
+.input-group-template input.suffix-icon {
+  border-right: none !important;
+}
+
+/*# sourceMappingURL=input.css.map */
