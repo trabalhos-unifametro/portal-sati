@@ -1,46 +1,75 @@
 # portal-sati
 
-This template should help get you started developing with Vue 3 in Vite.
+### S.A.T.I - Sistema de Análise de Tempo Internação<br/>
+Este projeto é um portal front-end para um trabalho da faculdade, que irá consumir uma RESTful API para exibição de dados de um hospital fictício.
 
-## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+> Status do Projeto: Em desenvolvimento :warning:
 
-## Type Support for `.vue` Imports in TS
+## Principais tecnologias utilizadas
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th><th>Versão</th><th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <img src="https://img.shields.io/badge/Vue%20js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D" /> </td> <td>^3.3.4</td> <td><a href="https://vuejs.org/guide/introduction.html">https://vuejs.org/guide/introduction.html</a></td>
+        </tr>
+        <tr>
+            <td><img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" /></td><td>^4.4.9</td> <td><a href="https://vitejs.dev/guide">https://vitejs.dev/guide</a></td>
+        </tr>
+        <tr>
+            <td><img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" /></td><td>~5.1.6</td> <td><a href="https://typescriptlang.org/docs">https://typescriptlang.org/docs</a></td>
+        </tr>
+        <tr>
+            <td><img src="https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white" /></td><td>^5.3.2</td> <td><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/">https://getbootstrap.com/docs/5.3/getting-started/introduction/</a></td>
+        </tr>
+    </tbody>
+</table>
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+## Requisitos para configuração e execução do projeto
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+### Ter instalado em máquina: 
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th><th>Versão</th><th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <img src="https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white"/> </td> <td> >=v18.14.1 </td> <td><a href="https://nodejs.org/en">https://nodejs.org/en</a></td>
+        </tr>
+        <tr>
+            <td> <img src="https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white"/> </td> <td>>=v9.3.1</td> <td><a href="https://docs.npmjs.com/">https://docs.npmjs.com/</a></td>
+        </tr>
+    </tbody>
+</table>
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## Configuração e execução do projeto ambiente de desenvolvimento
 
-## Customize configuration
+### 1. Clonando repositório
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+```sh
+git clone https://github.com/trabalhos-unifametro/portal-sati.git
+```
 
-## Project Setup
+### 2. Acessando pasta raiz do projeto
+
+```sh
+cd portal-sati
+```
+
+### 3. Instalando dependências
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 4. Executando
 
 ```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
+npm install
 ```
