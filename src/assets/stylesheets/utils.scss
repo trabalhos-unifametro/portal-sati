@@ -8,7 +8,7 @@ $count: 25;
     font-size: calc($i/10)em !important;
   }
 
-  @if($i >= 10) {
+  @if($i >= 5) {
     .font-size-#{$i}px {
       font-size: #{$i}px !important;
     }

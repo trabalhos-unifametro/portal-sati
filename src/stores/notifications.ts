@@ -5,10 +5,10 @@ import {ref, type Ref} from "vue";
 export const Notifications = defineStore('notifications', () => {
   const notifications: Ref<Notification[]> = ref([])
   const _idGeneratorIncrement: Ref<number> = ref(0)
-  const _defaultDurationNotification: Ref<number> = ref(10000)
+  const _defaultDurationNotification: Ref<number> = ref(5000)
 
   const set = (not: Notification) => {
-    let id: number = _idGeneratorIncrement.value++
+    const id: number = _idGeneratorIncrement.value++
     notifications.value.push({
       id: id,
       message: not.message,

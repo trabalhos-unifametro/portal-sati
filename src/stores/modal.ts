@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 
 export const Modals = defineStore('modals', () => {
   const show = (id: string) => {
-    let modal: HTMLElement | null = document.getElementById(id)
+    const modal: HTMLElement | null = document.getElementById(id)
     if (modal !== null) {
       modal.classList.add('show')
       modal.style.display = 'block'
@@ -10,10 +10,9 @@ export const Modals = defineStore('modals', () => {
   }
 
   const hide = (id: string) => {
-    let modal: HTMLElement | null = document.getElementById(id)
-    if (modal !== null) {
-      modal.classList.remove('show')
-      modal.style.display = 'none'
+    const btnClose: HTMLElement | null = document.getElementById(id)
+    if (btnClose !== null) {
+      btnClose.click()
     }
   }
 

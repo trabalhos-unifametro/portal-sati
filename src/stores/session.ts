@@ -3,8 +3,8 @@ import {computed, type Ref, ref} from 'vue'
 import { type UserSession } from "@/interfaces"
 
 const convertSessionToInterface = (): Ref<UserSession | null> => {
-    let sessionSati = localStorage.getItem('session-sati');
-    let user: Ref<UserSession | null> = ref(null);
+    const sessionSati = localStorage.getItem('session-sati');
+    const user: Ref<UserSession | null> = ref(null);
     if (sessionSati !== null) {
         try {
             user.value = JSON.parse(sessionSati)
@@ -16,7 +16,7 @@ const convertSessionToInterface = (): Ref<UserSession | null> => {
 }
 
 export const session = defineStore('session', () => {
-    let user: Ref<UserSession | null> = convertSessionToInterface()
+    const user: Ref<UserSession | null> = convertSessionToInterface()
 
     const isLoggedIn = computed(() => user.value !== null)
 
