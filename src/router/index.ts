@@ -29,11 +29,59 @@ const router = createRouter({
           }
         },
         {
+          path: '/unidades/:id',
+          name: 'unit',
+          component: import('../views/app/units/Unit.vue'),
+          meta: {
+            title: 'Unidade'
+          }
+        },
+        {
           path: '/pacientes',
           name: 'patients',
           component: import('../views/app/patients/Index.vue'),
           meta: {
             title: 'Pacientes'
+          }
+        },
+        {
+          path: '/unidade/prontuario/:id',
+          name: 'medical-record-unit',
+          component: import('../views/app/medical_record/Index.vue'),
+          meta: {
+            title: 'Prontuário médico'
+          }
+        },
+        {
+          path: '/paciente/prontuario/:id',
+          name: 'medical-record-patient',
+          component: import('../views/app/medical_record/Index.vue'),
+          meta: {
+            title: 'Prontuário médico'
+          }
+        },
+        {
+          path: '/usuarios',
+          name: 'users',
+          component: import('../views/app/users/Index.vue'),
+          meta: {
+            title: 'Usuários'
+          }
+        },
+        {
+          path: '/meus-dados',
+          name: 'my-data',
+          component: import('../views/app/my_data/Index.vue'),
+          meta: {
+            title: 'Meus dados'
+          }
+        },
+        {
+          path: '/redefinir-senha',
+          name: 'redefine-password',
+          component: import('../views/app/my_data/ChangePassword.vue'),
+          meta: {
+            title: 'Redefinir senha'
           }
         },
       ]

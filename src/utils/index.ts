@@ -1,3 +1,5 @@
+const months: Array<string> = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+
 export const emailsIsNotValid = (email: string): boolean => {
    const user: string = email.substring(0, email.indexOf("@"));
    const domain: string = email.substring(email.indexOf("@") + 1, email.length);
@@ -19,3 +21,10 @@ export const containsLowercase = (str: string): boolean => /[a-z]/.test(str);
 export const containsNumbers = (str: string): boolean => /[0-9]/.test(str)
 
 export const containsSpecialChars = (str: string): boolean => /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(str)
+
+export const getNameFullMonth = (index: number): string => {
+   if (index <= (months.length - 1)) {
+      return months[index]
+   }
+   return ' - '
+}

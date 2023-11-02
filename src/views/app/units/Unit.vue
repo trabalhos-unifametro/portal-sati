@@ -52,26 +52,30 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="title-page mb-4">Pacientes</div>
+    <div class="d-flex justify-content-start align-items-center mb-4">
+      <router-link :to="{ name: 'units' }" class="title-page">Unidades</router-link>
+      <i class="bi-chevron-right fw-bold ms-2 me-2 font-color-black-10"></i>
+      <div class="title-page">Unidade {{ route.params?.id }}</div>
+    </div>
     <v-row>
       <v-col cols="4">
-        <card title="50" subtitle="Total de pacientes" />
+        <card title="4" subtitle="Pacientes nessa unidade" />
       </v-col>
       <v-col cols="4">
-        <card title="44" subtitle="Pacientes em unidades" />
+        <card title="3" subtitle="Quantidade máxima" />
       </v-col>
       <v-col cols="4">
-        <card title="6" subtitle="Pacientes em espera" />
+        <card title="1" subtitle="Vagas" />
       </v-col>
     </v-row>
     <v-row classes="mt-xxl-5">
       <v-col cols="4">
         <InputTemplate
-            id="filter-patient"
-            placeholder="Pesquisar por paciente"
-            v-model="filters.patient"
-            type="text"
-            :prefix-icon-without-border="true"
+          id="filter-patient"
+          placeholder="Pesquisar por paciente"
+          v-model="filters.patient"
+          type="text"
+          :prefix-icon-without-border="true"
         >
           <template #prefix-input>
             <i class="bi-search font-size-20px font-color-black-3 suffix-icon"></i>
@@ -80,13 +84,13 @@ export default defineComponent({
       </v-col>
       <v-col cols="3">
         <InputTemplate
-            id="filter-status-patient"
-            placeholder="Situação do paciente"
-            v-model="filters.statusPatient"
-            type="text"
-            :prefix-icon-without-border="true"
-            :select="true"
-            :options="filters.statusOptions"
+          id="filter-status-patient"
+          placeholder="Situação do paciente"
+          v-model="filters.statusPatient"
+          type="text"
+          :prefix-icon-without-border="true"
+          :select="true"
+          :options="filters.statusOptions"
         >
           <template #prefix-input>
             <i class="bi-search font-size-20px font-color-black-3 suffix-icon"></i>
@@ -95,13 +99,13 @@ export default defineComponent({
       </v-col>
       <v-col cols="3">
         <InputTemplate
-            id="filter-sort-by-patient"
-            placeholder="Ordenar por paciente"
-            v-model="filters.sortPatient"
-            type="text"
-            :prefix-icon-without-border="true"
-            :select="true"
-            :options="filters.sortPatientOptions"
+          id="filter-sort-by-patient"
+          placeholder="Ordenar por paciente"
+          v-model="filters.sortPatient"
+          type="text"
+          :prefix-icon-without-border="true"
+          :select="true"
+          :options="filters.sortPatientOptions"
         >
         </InputTemplate>
       </v-col>
@@ -120,8 +124,8 @@ export default defineComponent({
           </template>
           <template #medical_record="{ item }">
             <router-link
-                class="btn-icon-outline-primary"
-                :to="{ name: 'medical-record-patient', params: { id: item?.id } }"
+              class="btn-icon-outline-primary"
+              :to="{ name: 'medical-record-unit', params: { id: item?.id } }"
             >
               <i class="bi-clipboard2-pulse"></i>
             </router-link>
@@ -158,10 +162,10 @@ export default defineComponent({
       <v-col cols="12">
         <div class="d-flex justify-content-center align-items-center w-100">
           <pagination
-              :rows="items.length"
-              :perPage="perPage"
-              :currentPage="currentPage"
-              @pagechanged="onPageChange"
+            :rows="items.length"
+            :perPage="perPage"
+            :currentPage="currentPage"
+            @pagechanged="onPageChange"
           />
         </div>
       </v-col>

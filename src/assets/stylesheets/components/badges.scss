@@ -1,0 +1,19 @@
+.badge {
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 5px 8px;
+  text-align: center;
+  max-lines: 1;
+  text-overflow: ellipsis;
+
+  &.success {
+    background-color: rgba(0,255,57,0.25);
+    color: #2EC73E;
+  }
+
+  &.error {
+    background-color: rgba(255, 0, 0, 0.15);
+    color: #FB6363;
+  }
+}

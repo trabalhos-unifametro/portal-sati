@@ -34,7 +34,7 @@ export const Notifications = defineStore('notifications', () => {
   }
 
   const remove = (i: number) => {
-    let index: number | null | undefined = _getIndex(i)
+    const index: number | null | undefined = _getIndex(i)
     if (index !== null && index !== undefined) {
       notifications.value.splice(index, 1)
     }

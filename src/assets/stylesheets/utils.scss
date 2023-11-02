@@ -34,3 +34,51 @@ $count: 25;
     text-decoration: underline;
   }
 }
+
+.title-page {
+  font-size: 30px;
+  font-weight: 600;
+  color: rgb(0,0,0);
+}
+
+.border-none {
+  border: none !important;
+}
+
+.border-top {
+  border-top: 1px solid black;
+
+  &.black-80-2px {
+    border-top: 2px solid rgba(0,0,0,0.8)
+  }
+}
+
+#app {
+  background-color: #F3F3F3;
+}
+
+.rotate {
+  transform: rotate(0deg);
+  transition: all 0.2s;
+
+  &.deg-178 {
+    transform: rotate(178deg);
+  }
+
+  &.bi-plus-lg::before {
+    transform: rotate(0deg);
+    transition: all 0.2s;
+  }
+
+  &.deg-45 {
+    &.bi-plus-lg::before {
+      transform: rotate(45deg) !important;
+    }
+  }
+}
+
+a {
+  &:hover {
+    background-color: unset;
+  }
+}

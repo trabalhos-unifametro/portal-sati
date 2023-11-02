@@ -19,3 +19,23 @@
     min-width: 170px !important;
   }
 }
+
+.btn-icon-outline-primary {
+  cursor: pointer;
+  background-color: transparent;
+  transition: all 0.5s;
+  padding: 0;
+  border: none;
+
+  i {
+    font-size: 25px;
+    color: rgba(0,0,0,0.5);
+    transition: all 0.5s;
+  }
+
+  &:hover {
+    i {
+      color: #1C6F77;
+    }
+  }
+}

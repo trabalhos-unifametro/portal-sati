@@ -14,8 +14,6 @@ import type {RequestRecoverPassword} from "@/interfaces";
 const not = Notifications()
 const modal = Modals()
 export default defineComponent({
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: "Login",
   components: {
     Lock,
     At,

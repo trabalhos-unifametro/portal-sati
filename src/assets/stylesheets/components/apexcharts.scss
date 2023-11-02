@@ -1,0 +1,52 @@
+.tooltip-charts {
+  padding: 10px;
+  background-color: rgba(28,111,119,0.8);
+
+  i {
+    font-size: 16px;
+    color: #fff;
+    margin-right: 5px;
+  }
+
+  span {
+    color: #fff;
+
+    &.tooltip-title {
+      font-weight: bold;
+    }
+
+    &.tooltip-text {
+      font-weight: 500;
+    }
+  }
+
+  hr {
+    margin: 5px 0;
+    border-color: #fff;
+    border-width: 2px;
+  }
+
+  &.bg-color-1 {
+    background-color: rgba(50,205,214,0.8);
+  }
+}
+.legend-1, .legend-2 {
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.legend-1 {
+  background-color: #1C6F77;
+}
+
+.legend-2 {
+  background-color: #32CDD6;
+}
+
+.separate-legend {
+  flex: 1;
+  border: 1px dashed rgba(0,0,0,0.5);
+  margin: 0 5px;
+}
