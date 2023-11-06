@@ -58,7 +58,7 @@ const contentWithoutBody = slots['content-without-body']
 
 <template>
   <div :class="classesCard()">
-    <div class="card-body" v-if="contentWithBody">
+    <div class="card-body" :class="classesBody()" v-if="contentWithBody">
       <slot name="content-with-body"></slot>
     </div>
     <slot name="content-without-body" v-else-if="contentWithoutBody"></slot>

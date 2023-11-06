@@ -5,6 +5,9 @@ import Card from "@/components/Card.vue";
 import InputTemplate from "@/components/InputTemplate.vue";
 import DataTable from "@/components/DataTable.vue";
 import Pagination from "@/components/Pagination.vue";
+import {getTotalizatorsUnits} from "@/services/unit_service";
+import type {ResponseUnitTotalizators} from "@/interfaces";
+import {isFilled} from "@/utils";
 
 export default defineComponent({
   components: {InputTemplate, Card, DataTable, Pagination},
@@ -22,29 +25,66 @@ export default defineComponent({
       { label: 'Nome', key: 'name' },
       { label: 'Tempo de internação geral', key: 'expected_hospitalization_time' },
       { label: 'Tempo de internação atual', key: 'current_hospitalization_time' },
-      { label: 'Status', key: 'status' },
+      { label: 'Situação', key: 'status' },
       { label: 'Prontuário', key: 'medical_record' },
       { label: 'Detalhes', key: 'details' },
     ],
     items: [
-      { id: 1, hospitalization_code: 'TESTE 1', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 2, hospitalization_code: 'TESTE 2', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 3, hospitalization_code: 'TESTE 3', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 4, hospitalization_code: 'TESTE 4', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 5, hospitalization_code: 'TESTE 5', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 6, hospitalization_code: 'TESTE 6', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 7, hospitalization_code: 'TESTE 7', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 8, hospitalization_code: 'TESTE 8', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 9, hospitalization_code: 'TESTE 9', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 10, hospitalization_code: 'TESTE 10', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
+      {
+        id: 1,
+        hospitalization_code: 'TESTE 1',
+        name: 'TESTE 1',
+        expected_hospitalization_time: 'TESTE 1',
+        current_hospitalization_time: 'TESTE 1',
+        status_id: 1,
+        status: 'Dentro do período',
+        medical_record: 'TESTE 1',
+        _details: false,
+        more_details: {
+          mother_name: 'TESTE',
+          cpf: '000.000.000-00',
+          gender: 'M',
+          unit: 'Unidade',
+          address: {
+            street: 'Rua completo teste',
+            number: 0,
+            neighborhood: 'Bairro completo teste',
+            city: 'Cidade',
+            state: 'estado'
+          }
+        }
+      },
     ],
     currentPage: 1,
-    perPage: 10
+    perPage: 10,
+    unitName: '',
+    totalizators: {
+      qtdMax: 0,
+      qtdPatients: 0,
+      vacancies: 0
+    }
   }),
   methods: {
+    async getTotalizators() {
+      const id: any = this.route.params.id
+      await getTotalizatorsUnits(id).
+      then(response => {
+        const totalizators: ResponseUnitTotalizators = response.data
+        this.totalizators.qtdMax = totalizators.qtd_max
+        this.totalizators.qtdPatients = totalizators.qtd_patients
+        this.totalizators.vacancies = totalizators.vacancies
+        if (!isFilled(this.unitName) || (isFilled(totalizators.unit_name) && totalizators.unit_name !== this.unitName)) {
+          this.unitName = totalizators.unit_name
+        }
+      }).
+      catch(err => console.info(err))
+    },
     onPageChange(page: number) {
       this.currentPage = page
     }
+  },
+  async mounted() {
+    await this.getTotalizators()
   }
 });
 
@@ -55,17 +95,17 @@ export default defineComponent({
     <div class="d-flex justify-content-start align-items-center mb-4">
       <router-link :to="{ name: 'units' }" class="title-page">Unidades</router-link>
       <i class="bi-chevron-right fw-bold ms-2 me-2 font-color-black-10"></i>
-      <div class="title-page">Unidade {{ route.params?.id }}</div>
+      <div class="title-page">{{ unitName }}</div>
     </div>
     <v-row>
       <v-col cols="4">
-        <card title="4" subtitle="Pacientes nessa unidade" />
+        <card :title="totalizators.qtdPatients.toString()" subtitle="Pacientes nessa unidade" />
       </v-col>
       <v-col cols="4">
-        <card title="3" subtitle="Quantidade máxima" />
+        <card :title="totalizators.qtdMax.toString()" subtitle="Quantidade máxima" />
       </v-col>
       <v-col cols="4">
-        <card title="1" subtitle="Vagas" />
+        <card :title="totalizators.vacancies.toString()" subtitle="Vagas" />
       </v-col>
     </v-row>
     <v-row classes="mt-xxl-5">

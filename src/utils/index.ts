@@ -28,3 +28,11 @@ export const getNameFullMonth = (index: number): string => {
    }
    return ' - '
 }
+
+export const isFilled = (field: any): boolean => {
+   if (field === null || field === undefined) return false
+   if (field === 0) return false
+   if (field.trim().length === 0) return false
+
+   return true
+}

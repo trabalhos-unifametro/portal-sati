@@ -2,15 +2,29 @@
 import {defineComponent} from 'vue'
 import Card from "@/components/Card.vue";
 import {getNameFullMonth} from "@/utils";
+import {
+  dashboardGraphicOccupationMonthly,
+  dashboardGraphicPatients,
+  dashboardGraphicUnits,
+  dashboardTotalizatorsPatients,
+  dashboardTotalizatorsUnits
+} from "@/services/dashboard_service";
+import type {
+  ResponseDashboardGraphicMonthlyOccupation,
+  ResponseDashboardGraphicPatients,
+  ResponseDashboardGraphicUnits,
+  ResponseDashboardTotalizatorsPatients,
+  ResponseDashboardTotalizatorsUnits
+} from "@/interfaces";
 
 
 export default defineComponent({
   components: {
     Card
   },
-  data: () => ({
+  data: (): any => ({
     pieChartUnits: {
-      series: [50, 26],
+      series: [],
       options: {
         chart: {
           width: 380,
@@ -32,7 +46,7 @@ export default defineComponent({
       }
     },
     pieChartPatients: {
-      series: [40, 10],
+      series: [],
       options: {
         chart: {
           width: 380,
@@ -96,7 +110,7 @@ export default defineComponent({
           enabled: true,
           fillSeriesColor: false,
           theme: false,
-          custom: function({series, seriesIndex, dataPointIndex, w}) {
+          custom: function({series, seriesIndex, dataPointIndex, w}: any) {
             return `<div class="tooltip-charts ${seriesIndex === 0 ? 'bg-color-1' : ''}">
               <i class="bi-calendar2-week"></i>
               <span class="tooltip-title">${getNameFullMonth(dataPointIndex)}</span><br/>
@@ -108,16 +122,93 @@ export default defineComponent({
       },
       series: [
         {
-          name: 'Unidades disponíveis',
-          data: [10, 12, 14, 51, 15, 28, 38, 46, 15, 16],
+          name: 'Vagas',
+          data: [],
         },
         {
-          name: 'Unidades ocupadas',
-          data: [20, 29, 37, 36, 44, 45, 50, 58, 19, 22]
+          name: 'Ocupação',
+          data: []
         },
       ],
+    },
+    totalizatorsUnits: {
+      total: 0,
+      withVacancies: 0,
+      noVacancy: 0,
+    },
+    totalizatorsPatients: {
+      total: 0,
+      withinPeriod: 0,
+      outsidePeriod: 0,
     }
-  })
+  }),
+  methods: {
+    async getTotalizatorsUnits() {
+      this.totalizatorsUnits.total = 0
+      this.totalizatorsUnits.noVacancy = 0
+      this.totalizatorsUnits.withVacancies = 0
+      await dashboardTotalizatorsUnits()
+      .then(response => {
+        const totalizators: ResponseDashboardTotalizatorsUnits = response.data
+        this.totalizatorsUnits.total = totalizators.total
+        this.totalizatorsUnits.noVacancy = totalizators.no_vacancy
+        this.totalizatorsUnits.withVacancies = totalizators.with_vacancies
+      })
+      .catch(err => console.info(err))
+    },
+    async getTotalizatorsPatients() {
+      this.totalizatorsPatients.total = 0
+      this.totalizatorsPatients.withinPeriod = 0
+      this.totalizatorsPatients.outsidePeriod = 0
+      await dashboardTotalizatorsPatients()
+      .then(response => {
+        const totalizators: ResponseDashboardTotalizatorsPatients = response.data
+        this.totalizatorsPatients.total = totalizators.total
+        this.totalizatorsPatients.withinPeriod = totalizators.within_period
+        this.totalizatorsPatients.outsidePeriod = totalizators.outside_period
+      })
+      .catch(err => console.info(err))
+    },
+    async getGraphicUnits() {
+      this.pieChartUnits.series = [0,0]
+      await dashboardGraphicUnits().
+      then(response => {
+        const graphic: ResponseDashboardGraphicUnits = response.data
+        this.pieChartUnits.series = [graphic.no_vacancy, graphic.with_vacancies]
+      }).
+      catch(err => console.info(err))
+    },
+    async getGraphicPatients() {
+      this.pieChartPatients.series = [0, 0]
+      await dashboardGraphicPatients().
+      then(response => {
+        const graphic: ResponseDashboardGraphicPatients = response.data
+        this.pieChartPatients.series = [graphic.patients_in_unit, graphic.patients_waiting_unit]
+      }).
+      catch(err => console.info(err))
+    },
+    async getGraphicMonthlyOccupation() {
+      this.barChartOccupancyMonthly.series[0].data = []
+      this.barChartOccupancyMonthly.series[1].data = []
+      await dashboardGraphicOccupationMonthly().
+      then(response => {
+        const graphic: ResponseDashboardGraphicMonthlyOccupation[] = response.data
+        for (const item of graphic) {
+          this.barChartOccupancyMonthly.series[0].data.push(item.total_vacancies)
+          this.barChartOccupancyMonthly.series[1].data.push(item.total_occupation)
+        }
+        console.info(graphic)
+      }).
+      catch(err => console.info(err))
+    },
+  },
+  async mounted() {
+    await this.getTotalizatorsUnits()
+    await this.getTotalizatorsPatients()
+    await this.getGraphicUnits()
+    await this.getGraphicPatients()
+    await this.getGraphicMonthlyOccupation()
+  },
 })
 </script>
 
@@ -134,22 +225,22 @@ export default defineComponent({
     </v-row>
     <v-row>
       <v-col cols="2">
-        <card title="4" subtitle="Total" />
+        <card :title="totalizatorsUnits.total.toString()" subtitle="Total" />
       </v-col>
       <v-col cols="2">
-        <card title="3" subtitle="Com vagas" />
+        <card :title="totalizatorsUnits.withVacancies.toString()" subtitle="Com vagas" />
       </v-col>
       <v-col cols="2">
-        <card title="1" subtitle="Lotadas" />
+        <card :title="totalizatorsUnits.noVacancy.toString()" subtitle="Lotadas" />
       </v-col>
       <v-col cols="2">
-        <card title="50" subtitle="Total" />
+        <card :title="totalizatorsPatients.total.toString()" subtitle="Total" />
       </v-col>
       <v-col cols="2">
-        <card title="44" subtitle="Dentro do período" />
+        <card :title="totalizatorsPatients.withinPeriod.toString()" subtitle="Dentro do período" />
       </v-col>
       <v-col cols="2">
-        <card title="6" subtitle="Fora do período" />
+        <card :title="totalizatorsPatients.outsidePeriod.toString()" subtitle="Fora do período" />
       </v-col>
     </v-row>
     <v-row classes="mt-4">
@@ -167,7 +258,7 @@ export default defineComponent({
                       <span>Unidades ocupadas</span>
                     </div>
                     <div class="separate-legend"></div>
-                    <span>50</span>
+                    <span>{{ pieChartUnits.series[0] }}</span>
                   </div>
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <div class="d-flex justify-content-start align-items-center">
@@ -175,10 +266,13 @@ export default defineComponent({
                       <span>Unidades disponíveis</span>
                     </div>
                     <div class="separate-legend"></div>
-                    <span>26</span>
+                    <span>{{ pieChartUnits.series[1] }}</span>
                   </div>
                 </div>
-                <button class="btn btn-outline-dark w-100 fw-semibold">Ir para unidades</button>
+                <router-link :to="{ name: 'units' }"
+                   class="btn btn-outline-dark d-flex justify-content-center align-items-center w-100 fw-semibold">
+                  Ir para unidades
+                </router-link>
               </div>
             </div>
           </template>
@@ -198,7 +292,7 @@ export default defineComponent({
                       <span>Pacientes em unidades</span>
                     </div>
                     <div class="separate-legend"></div>
-                    <span>40</span>
+                    <span>{{ pieChartPatients.series[0] }}</span>
                   </div>
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <div class="d-flex justify-content-start align-items-center">
@@ -206,10 +300,14 @@ export default defineComponent({
                       <span>Pacientes em espera</span>
                     </div>
                     <div class="separate-legend"></div>
-                    <span>10</span>
+                    <span>{{ pieChartPatients.series[1] }}</span>
                   </div>
                 </div>
-                <button class="btn btn-outline-dark w-100 fw-semibold">Ir para pacientes</button>
+                <router-link
+                  :to="{ name: 'patients' }"
+                  class="btn btn-outline-dark d-flex justify-content-center align-items-center w-100 fw-semibold">
+                  Ir para pacientes
+                </router-link>
               </div>
             </div>
           </template>
@@ -218,7 +316,7 @@ export default defineComponent({
     </v-row>
     <v-row classes="mt-4">
       <v-col cols="12">
-        <div class="font-size-20px mb-2">Ocupação mensal (%)</div>
+        <div class="font-size-20px mb-2">Ocupação mensal</div>
         <card>
           <template #content-with-body>
             <apexchart type="bar" height="300px" :options="barChartOccupancyMonthly.options" :series="barChartOccupancyMonthly.series"></apexchart>

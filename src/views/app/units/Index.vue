@@ -3,10 +3,14 @@ import {defineComponent} from 'vue'
 import Card from "@/components/Card.vue";
 import InputTemplate from "@/components/InputTemplate.vue";
 import CardUnit from "@/components/CardUnit.vue";
+import {dashboardTotalizatorsUnits} from "@/services/dashboard_service";
+import {ResponseDashboardTotalizatorsUnits, ResponseUnit} from "@/interfaces";
+import {getListUnits} from "@/services/unit_service";
+import {isFilled} from "@/utils";
 
 export default defineComponent({
   components: {InputTemplate, Card, CardUnit},
-  data: () => ({
+  data: (): any => ({
     filters: {
       unit: '',
       occupation: '',
@@ -15,49 +19,85 @@ export default defineComponent({
       unitSort: '',
       optionsSort: ['Crescente', 'Decrescente']
     },
-    units: [
-      {
-        id: 1,
-        name: 'Unidade 1',
-        items: [
-          {label: 'Qtd. atual de pacientes', total: 12},
-          {label: 'Qtd. máxima de pacientes', total: 25},
-          {label: 'Qtd. de vagas', total: 13},
-        ],
-        progress: 40,
-      },
-      {
-        id: 2,
-        name: 'Unidade 2',
-        items: [
-          {label: 'Qtd. atual de pacientes', total: 12},
-          {label: 'Qtd. máxima de pacientes', total: 25},
-          {label: 'Qtd. de vagas', total: 13},
-        ],
-        progress: 85,
-      },
-      {
-        id: 3,
-        name: 'Unidade 3',
-        items: [
-          {label: 'Qtd. atual de pacientes', total: 12},
-          {label: 'Qtd. máxima de pacientes', total: 25},
-          {label: 'Qtd. de vagas', total: 13},
-        ],
-        progress: 15,
-      },
-      {
-        id: 4,
-        name: 'Unidade 4',
-        items: [
-          {label: 'Qtd. atual de pacientes', total: 12},
-          {label: 'Qtd. máxima de pacientes', total: 25},
-          {label: 'Qtd. de vagas', total: 13},
-        ],
-        progress: 98,
+    units: [],
+    totalizators: {
+      total: 0,
+      withVacancies: 0,
+      noVacancy: 0,
+    },
+    searching: false
+  }),
+  methods: {
+    async getTotalizators(filters="") {
+      this.totalizators.total = 0
+      this.totalizators.noVacancy = 0
+      this.totalizators.withVacancies = 0
+      await dashboardTotalizatorsUnits(filters).
+      then(response => {
+        const totalizators: ResponseDashboardTotalizatorsUnits = response.data
+        this.totalizators.total = totalizators.total
+        this.totalizators.noVacancy = totalizators.no_vacancy
+        this.totalizators.withVacancies = totalizators.with_vacancies
+      }).
+      catch(err => console.info(err))
+    },
+    async getListUnits(filters="") {
+      this.units = []
+      await getListUnits(filters).
+      then(response => {
+        const list: ResponseUnit[] = response.data ?? []
+        for (const unit of list) {
+          this.units.push({
+            id: unit.id,
+            name: unit.name,
+            items: [
+              {label: 'Qtd. atual de pacientes', total: unit.current_patient_capacity},
+              {label: 'Qtd. máxima de pacientes', total: unit.max_patient_capacity},
+              {label: 'Qtd. de vagas', total: unit.number_of_vacancies},
+            ],
+            progress: parseFloat(((unit.current_patient_capacity / unit.max_patient_capacity) * 100).toFixed(2)),
+          })
+        }
+      }).
+      catch(err => console.info(err))
+    },
+    async applyFilters() {
+      let filtersList: string = "?utf8=✓"
+      let filtersTotalizators: string = "?utf8=✓"
+      this.searching = true
+
+      if (isFilled(this.filters.unit)) {
+        filtersList += `&unit_name=${this.filters.unit}`
+        filtersTotalizators += `&unit_name=${this.filters.unit}`
       }
-    ]
-  })
+      if (isFilled(this.filters.unitSort)) {
+        filtersList += `&sort_by_unit=${this.filters.unitSort}`
+      }
+      if (isFilled(this.filters.occupation)) {
+        filtersList += `&occupation=${this.filters.occupation}`
+        filtersTotalizators += `&occupation=${this.filters.occupation}`
+      }
+      if (isFilled(this.filters.occupationSort)) {
+        filtersList += `&sort_by_occupation=${this.filters.occupationSort}`
+      }
+      await this.getTotalizators(filtersTotalizators)
+      await this.getListUnits(filtersList)
+    },
+    async clearFilters() {
+      this.filters.unit = ''
+      this.filters.unitSort = ''
+      this.filters.occupation = ''
+      this.filters.occupationSort = ''
+      this.searching = true
+
+      await this.getTotalizators()
+      await this.getListUnits()
+    }
+  },
+  async mounted() {
+    await this.getTotalizators()
+    await this.getListUnits()
+  }
 })
 </script>
 
@@ -66,13 +106,13 @@ export default defineComponent({
     <div class="title-page mb-4">Unidades</div>
     <v-row>
       <v-col cols="4">
-        <card title="4" subtitle="Total" />
+        <card :title="totalizators.total.toString()" subtitle="Total" />
       </v-col>
       <v-col cols="4">
-        <card title="3" subtitle="Unidades com vagas" />
+        <card :title="totalizators.withVacancies.toString()" subtitle="Unidades com vagas" />
       </v-col>
       <v-col cols="4">
-        <card title="1" subtitle="Unidades Lotadas" />
+        <card :title="totalizators.noVacancy.toString()" subtitle="Unidades Lotadas" />
       </v-col>
     </v-row>
     <v-row classes="mt-xxl-5">
@@ -129,13 +169,13 @@ export default defineComponent({
         </InputTemplate>
       </v-col>
       <v-col cols="1">
-        <button class="btn btn-primary w-100">Filtrar</button>
+        <button class="btn btn-primary w-100" @click="applyFilters">Filtrar</button>
       </v-col>
       <v-col cols="1">
-        <button class="btn btn-outline-primary w-100">Limpar</button>
+        <button class="btn btn-outline-primary w-100" @click="clearFilters">Limpar</button>
       </v-col>
     </v-row>
-    <v-row classes="mt-4">
+    <v-row classes="mt-4" v-if="units.length > 0">
       <v-col
         cols="6"
         v-for="(unit, index) in units"
@@ -148,6 +188,24 @@ export default defineComponent({
           :items="unit.items"
           :progress="unit.progress"
         />
+      </v-col>
+    </v-row>
+    <v-row classes="mt-4" v-else-if="units.length === 0 && searching">
+      <v-col cols="12">
+        <card classes-body="d-flex justify-content-center align-items-center pb-5 pt-5">
+          <template #content-with-body>
+            <span class="font-size-20px">Nenhum resultado encontrado</span>
+          </template>
+        </card>
+      </v-col>
+    </v-row>
+    <v-row classes="mt-4" v-else-if="units.length === 0 && !searching">
+      <v-col cols="12">
+        <card classes-body="d-flex justify-content-center align-items-center pb-5 pt-5">
+          <template #content-with-body>
+            <span class="font-size-20px">Nenhuma unidade encontrada</span>
+          </template>
+        </card>
       </v-col>
     </v-row>
   </div>
