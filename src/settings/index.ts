@@ -18,3 +18,8 @@ export const routeDashboardGraphicOccupationMonthly: string = '/dashboard/monthl
 // UNIT SERVICE ==============================================================
 export const routeUnitList: string = '/units/list'
 export const routeUnitTotalizators: string = '/units/totalizators'
+export const routeUnitListPatients: string = '/units/patients'
+
+
+// MEDICAL RECORD SERVICE ====================================================
+export const routeMedicalRecordFindByID: string = '/medical_record/find_by_id'

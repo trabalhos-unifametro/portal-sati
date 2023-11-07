@@ -5,13 +5,13 @@ import Card from "@/components/Card.vue";
 import InputTemplate from "@/components/InputTemplate.vue";
 import DataTable from "@/components/DataTable.vue";
 import Pagination from "@/components/Pagination.vue";
-import {getTotalizatorsUnits} from "@/services/unit_service";
-import type {ResponseUnitTotalizators} from "@/interfaces";
-import {isFilled} from "@/utils";
+import {getListPatientsByUnit, getTotalizatorsUnits} from "@/services/unit_service";
+import type {ResponsePatientByUnit, ResponseUnitTotalizators} from "@/interfaces";
+import {formatDate, isFilled} from "@/utils";
 
 export default defineComponent({
   components: {InputTemplate, Card, DataTable, Pagination},
-  data: () => ({
+  data: (): any => ({
     route: useRoute(),
     filters: {
       patient: '',
@@ -22,39 +22,14 @@ export default defineComponent({
     },
     headers: [
       { label: 'Cód. Internação', key: 'hospitalization_code' },
-      { label: 'Nome', key: 'name' },
+      { label: 'Nome', key: 'patient_name' },
       { label: 'Tempo de internação geral', key: 'expected_hospitalization_time' },
       { label: 'Tempo de internação atual', key: 'current_hospitalization_time' },
-      { label: 'Situação', key: 'status' },
-      { label: 'Prontuário', key: 'medical_record' },
+      { label: 'Situação', key: 'situation' },
+      { label: 'Prontuário', key: 'medical_record_id' },
       { label: 'Detalhes', key: 'details' },
     ],
-    items: [
-      {
-        id: 1,
-        hospitalization_code: 'TESTE 1',
-        name: 'TESTE 1',
-        expected_hospitalization_time: 'TESTE 1',
-        current_hospitalization_time: 'TESTE 1',
-        status_id: 1,
-        status: 'Dentro do período',
-        medical_record: 'TESTE 1',
-        _details: false,
-        more_details: {
-          mother_name: 'TESTE',
-          cpf: '000.000.000-00',
-          gender: 'M',
-          unit: 'Unidade',
-          address: {
-            street: 'Rua completo teste',
-            number: 0,
-            neighborhood: 'Bairro completo teste',
-            city: 'Cidade',
-            state: 'estado'
-          }
-        }
-      },
-    ],
+    patients: [],
     currentPage: 1,
     perPage: 10,
     unitName: '',
@@ -65,9 +40,9 @@ export default defineComponent({
     }
   }),
   methods: {
-    async getTotalizators() {
+    async getTotalizators(filters="") {
       const id: any = this.route.params.id
-      await getTotalizatorsUnits(id).
+      await getTotalizatorsUnits(id, filters).
       then(response => {
         const totalizators: ResponseUnitTotalizators = response.data
         this.totalizators.qtdMax = totalizators.qtd_max
@@ -79,12 +54,77 @@ export default defineComponent({
       }).
       catch(err => console.info(err))
     },
+    async getListPatientsByUnit(filters="") {
+      const id: any = this.route.params.id
+      this.patients = []
+      await getListPatientsByUnit(id, filters).
+      then(response => {
+        const patients: ResponsePatientByUnit[] = response.data ?? []
+        for (const patient of patients) {
+          this.patients.push({
+            patient_id: patient.patient_id,
+            hospitalization_code: patient.hospitalization_code,
+            patient_name: patient.patient_name,
+            expected_hospitalization_time: formatDate(patient.expected_hospitalization_time),
+            current_hospitalization_time: formatDate(patient.current_hospitalization_time),
+            situation_id: patient.situation_id,
+            situation: patient.situation,
+            medical_record_id: patient.medical_record_id,
+            _details: false,
+            more_details: {
+              mother_name: patient.mother_name,
+              cpf: patient.cpf,
+              gender: patient.gender,
+              unit_name: patient.unit_name,
+              address: {
+                street: patient.street,
+                number: patient.number,
+                neighborhood: patient.neighborhood,
+                city: patient.city,
+                state: patient.state,
+                complement: patient.complement,
+                zip_code: patient.zip_code,
+              }
+            }
+          },)
+        }
+      }).
+      catch(err => console.info(err))
+    },
+    async applyFilters() {
+      let filtersTotalizators: string = "?utf8=✓"
+      let filtersPatients: string = "?utf8=✓"
+
+      if (isFilled(this.filters.patient)) {
+        filtersTotalizators += `&patient_name=${this.filters.patient}`
+        filtersPatients += `&patient_name=${this.filters.patient}`
+      }
+      if (isFilled(this.filters.statusPatient)) {
+        filtersTotalizators += `&situation_patient=${this.filters.statusPatient}`
+        filtersPatients += `&situation_patient=${this.filters.statusPatient}`
+      }
+      if (isFilled(this.filters.sortPatient)) {
+        filtersPatients += `&sort_by_patient=${this.filters.sortPatient}`
+      }
+
+      await this.getTotalizators(filtersTotalizators)
+      await this.getListPatientsByUnit(filtersPatients)
+    },
+    async clearFilters() {
+      this.filters.patient = ""
+      this.filters.sortPatient = ""
+      this.filters.statusPatient = ""
+
+      await this.getTotalizators()
+      await this.getListPatientsByUnit()
+    },
     onPageChange(page: number) {
       this.currentPage = page
     }
   },
   async mounted() {
     await this.getTotalizators()
+    await this.getListPatientsByUnit()
   }
 });
 
@@ -150,22 +190,22 @@ export default defineComponent({
         </InputTemplate>
       </v-col>
       <v-col cols="1">
-        <button class="btn btn-primary w-100">Filtrar</button>
+        <button class="btn btn-primary w-100" @click="applyFilters">Filtrar</button>
       </v-col>
       <v-col cols="1">
-        <button class="btn btn-outline-primary w-100">Limpar</button>
+        <button class="btn btn-outline-primary w-100" @click="clearFilters">Limpar</button>
       </v-col>
     </v-row>
     <v-row classes="mt-xxl-4">
       <v-col cols="12">
-        <data-table :headers="headers" :items="items" :current-page="currentPage" :per-page="perPage">
-          <template #status="{ item }">
-            <div class="badge" :class="{ 'success': item?.status_id === 1, 'error': item?.status_id === 2 }"> {{ item?.status }} </div>
+        <data-table :headers="headers" :items="patients" :current-page="currentPage" :per-page="perPage">
+          <template #situation="{ item }">
+            <div class="badge" :class="{ 'success': item?.situation_id === 1, 'error': item?.situation_id === 2 }"> {{ item?.situation }} </div>
           </template>
-          <template #medical_record="{ item }">
+          <template #medical_record_id="{ item }">
             <router-link
               class="btn-icon-outline-primary"
-              :to="{ name: 'medical-record-unit', params: { id: item?.id } }"
+              :to="{ name: 'medical-record-unit', params: { id: item?.medical_record_id } }"
             >
               <i class="bi-clipboard2-pulse"></i>
             </router-link>
@@ -175,22 +215,24 @@ export default defineComponent({
               <i class="bi-plus-lg rotate" :class="{ 'deg-45': item._details }"></i>
             </button>
           </template>
-          <template #row-details="{ item, index }">
+          <template #row-details="{ item }">
             <div class="card border-0">
               <div class="card-body p-4">
                 <div class="d-flex justify-content-start align-items-center">
                   <span class="me-5"><b>Nome da mãe:</b> {{ item?.more_details?.mother_name }} </span>
                   <span class="me-5"><b>CPF:</b> {{ item?.more_details?.cpf }} </span>
                   <span class="me-5"><b>Gênero:</b> {{ item?.more_details?.gender }} </span>
-                  <span><b>Unidade:</b> {{ item?.more_details?.unit }} </span>
+                  <span><b>Unidade:</b> {{ item?.more_details?.unit_name }} </span>
                 </div>
                 <div class="fw-bold mt-2 mb-1">Endereço</div>
                 <div class="d-flex justify-content-start align-items-center">
-                  <span class="me-3"><b>Rua:</b> {{ `${item?.more_details?.address?.street} ${index}` }}, </span>
+                  <span class="me-3"><b>Rua:</b> {{ `${item?.more_details?.address?.street}` }}, </span>
                   <span class="me-3"><b>número:</b> {{ item?.more_details?.address?.number }}, </span>
-                  <span class="me-3"><b>bairro:</b> {{ `${item?.more_details?.address?.neighborhood} ${index}` }}, </span>
-                  <span class="me-3"><b>cidade:</b> {{ `${item?.more_details?.address?.city} ${index}` }}, </span>
-                  <span class="me-3"><b>estado:</b> {{ `${item?.more_details?.address?.state} ${index}` }} </span>
+                  <span class="me-3"><b>bairro:</b> {{ `${item?.more_details?.address?.neighborhood}` }}, </span>
+                  <span class="me-3"><b>cep:</b> {{ `${item?.more_details?.address?.zip_code}` }}, </span>
+                  <span class="me-3"><b>cidade:</b> {{ `${item?.more_details?.address?.city}` }}, </span>
+                  <span class="me-3"><b>estado:</b> {{ `${item?.more_details?.address?.state}` }} </span>
+                  <span class="me-3" v-if="item?.more_details?.address?.state"><b>complemento:</b> {{ `${item?.more_details?.address?.complement}` }} </span>
                 </div>
               </div>
             </div>
@@ -198,11 +240,11 @@ export default defineComponent({
         </data-table>
       </v-col>
     </v-row>
-    <v-row v-if="items.length > perPage">
+    <v-row v-if="patients.length > perPage">
       <v-col cols="12">
         <div class="d-flex justify-content-center align-items-center w-100">
           <pagination
-            :rows="items.length"
+            :rows="patients.length"
             :perPage="perPage"
             :currentPage="currentPage"
             @pagechanged="onPageChange"

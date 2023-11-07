@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const months: Array<string> = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
 export const emailsIsNotValid = (email: string): boolean => {
@@ -35,4 +37,8 @@ export const isFilled = (field: any): boolean => {
    if (field.trim().length === 0) return false
 
    return true
+}
+
+export const formatDate = (date: any, format="DD/MM/YYYY"): string => {
+   return moment(date).format(format)
 }

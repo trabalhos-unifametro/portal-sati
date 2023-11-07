@@ -204,10 +204,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: none;
             border-bottom: 1px solid rgba(0,0,0,0.1);
             text-decoration: none;
             color: rgba(0,0,0,0.8);
             cursor: pointer;
+            background-color: #fff;
 
             &:last-child {
               border-radius: 0 0 5px 5px;

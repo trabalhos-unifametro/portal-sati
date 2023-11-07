@@ -8,6 +8,7 @@ const props = defineProps({
   subtitle: String,
   classes: String,
   classesBody: String,
+  classesWithoutBody: String,
   minHeight: {
     type: String,
     default: 'auto'
@@ -58,10 +59,12 @@ const contentWithoutBody = slots['content-without-body']
 
 <template>
   <div :class="classesCard()">
-    <div class="card-body" :class="classesBody()" v-if="contentWithBody">
+    <div :class="classesBody()" v-if="contentWithBody">
       <slot name="content-with-body"></slot>
     </div>
-    <slot name="content-without-body" v-else-if="contentWithoutBody"></slot>
+    <div :class="props.classesWithoutBody" v-else-if="contentWithoutBody">
+      <slot name="content-without-body"></slot>
+    </div>
     <div :class="classesBody()" v-else>
       <span class="h2">{{ props.title }}</span>
       <span class="font-size-20px">{{ props.subtitle }}</span>

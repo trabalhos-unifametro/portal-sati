@@ -197,7 +197,6 @@ export default defineComponent({
           this.barChartOccupancyMonthly.series[0].data.push(item.total_vacancies)
           this.barChartOccupancyMonthly.series[1].data.push(item.total_occupation)
         }
-        console.info(graphic)
       }).
       catch(err => console.info(err))
     },
@@ -317,8 +316,8 @@ export default defineComponent({
     <v-row classes="mt-4">
       <v-col cols="12">
         <div class="font-size-20px mb-2">Ocupação mensal</div>
-        <card>
-          <template #content-with-body>
+        <card classes-without-body="p-4">
+          <template #content-without-body>
             <apexchart type="bar" height="300px" :options="barChartOccupancyMonthly.options" :series="barChartOccupancyMonthly.series"></apexchart>
           </template>
         </card>

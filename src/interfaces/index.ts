@@ -80,3 +80,52 @@ export interface ResponseUnitTotalizators {
   qtd_patients: number
   vacancies:    number
 }
+
+export interface ResponsePatientByUnit {
+  patient_id:                    number
+  unit_id:                       number
+  hospitalization_code:          number
+  patient_name:                  string
+  expected_hospitalization_time: string
+  current_hospitalization_time:  string
+  situation_id:                  number
+  situation:                     string
+  medical_record_id:             number
+  mother_name:                   string
+  cpf:                           string
+  gender:                        string
+  unit_name:                     string
+  street:                        string
+  number:                        number
+  neighborhood:                  string
+  city:                          string
+  state:                         string
+  zip_code:                      string
+  complement:                    string
+}
+
+export interface ResponseMedicalRecord {
+  allergy:              string
+  caregiver_contact:    string
+  city:                 string
+  complement:           string
+  date_of_birth:        string
+  doctors:              string
+  email:                string
+  gender:               string
+  hospitalization_code: number
+  limitation:           string
+  neighborhood:         string
+  number:               string
+  occupation:           string
+  opening_date:         string
+  patient_id:           number
+  patient_name:         string
+  schooling:            string
+  state:                string
+  street:               string
+  telephone:            string
+  unit_id:              number
+  unit_name:            string
+  zip_code:             string
+}

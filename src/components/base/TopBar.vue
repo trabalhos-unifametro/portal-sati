@@ -2,6 +2,17 @@
 import AccountCircle from "vue-material-design-icons/AccountCircle.vue";
 import Logout from "vue-material-design-icons/Logout.vue";
 import Key from "vue-material-design-icons/Key.vue";
+import {session} from "@/stores/session";
+import {useRouter} from 'vue-router'
+
+const s = session()
+const router = useRouter()
+
+const logOut = () => {
+  s.logout();
+  router.push({ name: 'login' })
+}
+
 </script>
 
 <template>
@@ -91,14 +102,14 @@ import Key from "vue-material-design-icons/Key.vue";
               <div class="font-size-12px">Clique para redefinir sua senha</div>
             </div>
           </router-link>
-          <div class="menu-item">
+          <button type="button" @click="logOut()" class="menu-item">
             <div class="menu-item-prefix">
               <logout size="25"></logout>
             </div>
             <div class="menu-item-suffix">
               <div class="font-size-16px">Sair</div>
             </div>
-          </div>
+          </button>
         </div>
       </button>
     </div>

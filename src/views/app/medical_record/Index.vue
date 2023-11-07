@@ -1,16 +1,44 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import { useRoute } from 'vue-router'
+import {useRoute} from 'vue-router'
 import Card from "@/components/Card.vue";
 import {jsPDF} from "jspdf";
 import Printer from 'vue-material-design-icons/Printer.vue'
 import Download from 'vue-material-design-icons/Download.vue'
+import {getMedicalRecordByID} from "@/services/medical_record_service";
+import type {ResponseMedicalRecord} from "@/interfaces";
+import {formatDate} from "@/utils";
 
-const pdf = new jsPDF('l', 'pt', [1450, 1000])
+const pdf = new jsPDF('l', 'pt', [1450, 1020])
 export default defineComponent({
   components: { Card, Printer, Download },
   data: () => ({
-    route: useRoute()
+    route: useRoute(),
+    medicalRecord: {
+      patient_id: 0,
+      unit_id: 0,
+      hospitalization_code: 0,
+      opening_date: "",
+      patient_name: "",
+      date_of_birth: "",
+      gender: "",
+      unit_name: "",
+      street: "",
+      neighborhood: "",
+      number: "",
+      city: "",
+      state: "",
+      zip_code: "",
+      complement: "",
+      telephone: "",
+      email: "",
+      caregiver_contact: "",
+      doctors: "",
+      schooling: "",
+      occupation: "",
+      limitation: "",
+      allergy: ""
+    }
   }),
   methods: {
     downloadMedicalRecord(printOrDownload = 'print') {
@@ -74,7 +102,20 @@ export default defineComponent({
         callback(canvas.toDataURL('image/png'));
         canvas.remove();
       }
+    },
+    async medicalRecordFindByID() {
+      const id: any = this.route.params.id
+      await getMedicalRecordByID(id).
+      then(response => {
+        this.medicalRecord = response.data
+        this.medicalRecord.opening_date = formatDate(this.medicalRecord.opening_date)
+        this.medicalRecord.date_of_birth = formatDate(this.medicalRecord.date_of_birth)
+      }).
+      catch(err => console.info(err))
     }
+  },
+  async mounted() {
+    await this.medicalRecordFindByID()
   }
 })
 </script>
@@ -105,18 +146,18 @@ export default defineComponent({
     </div>
     <v-row>
       <v-col cols="12">
-        <card classes="p-4" id="doc-pdf">
-          <template #content-with-body>
+        <card classes="p-4" id="doc-pdf" classes-without-body="p-2">
+          <template #content-without-body>
             <v-row>
               <v-col cols="2" classes="d-flex justify-content-start align-items-center">
                 <div class="text-nowrap me-3">Número do prontuário: </div>
               </v-col>
               <v-col cols="6" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.hospitalization_code" disabled readonly />
               </v-col>
               <v-col cols="4" classes="d-flex justify-content-start align-items-center">
                 <div class="text-nowrap me-3">Data de abertura: </div>
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.opening_date" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -124,7 +165,7 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Nome completo: </div>
               </v-col>
               <v-col cols="10" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.patient_name" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -132,14 +173,14 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Data de nascimento: </div>
               </v-col>
               <v-col cols="4" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.date_of_birth" disabled readonly />
               </v-col>
               <v-col cols="6" classes="d-flex justify-content-end align-items-center">
                 <div class="text-nowrap me-5">Gênero: </div>
                 <div class="me-2">M</div>
-                <input class="form-control form-mr-readonly w-40px" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.gender?.toUpperCase() === 'M' ? 'X' : ''" disabled readonly />
                 <div class="ms-4 me-2">F</div>
-                <input class="form-control form-mr-readonly w-40px" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.gender?.toUpperCase() === 'F' ? 'X' : ''" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -147,7 +188,14 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Endereço: </div>
               </v-col>
               <v-col cols="10" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly"
+                       :value="`${medicalRecord.street},
+                        ${medicalRecord.number},
+                        ${medicalRecord.neighborhood},
+                        ${medicalRecord.zip_code},
+                        ${medicalRecord.complement + ',' ?? ''}
+                        ${medicalRecord.city} - ${medicalRecord.state}.`"
+                       disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -155,13 +203,13 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Telefone: </div>
               </v-col>
               <v-col cols="4" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.telephone" disabled readonly />
               </v-col>
               <v-col cols="2" classes="d-flex justify-content-start align-items-center">
                 <div class="text-nowrap me-3">Email: </div>
               </v-col>
               <v-col cols="4" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.email" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -169,7 +217,7 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Nome, telefone ou outro tipo de contato do responsável/cuidador (se aplicável): </div>
               </v-col>
               <v-col cols="12" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.caregiver_contact" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -177,7 +225,7 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Médico(s) do paciente (se houver): </div>
               </v-col>
               <v-col cols="9" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.doctors" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -185,13 +233,13 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Escolaridade: </div>
               </v-col>
               <v-col cols="4" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.schooling" disabled readonly />
               </v-col>
               <v-col cols="2" classes="d-flex justify-content-start align-items-center">
                 <div class="text-nowrap me-3">Ocupação: </div>
               </v-col>
               <v-col cols="4" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.occupation" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -200,17 +248,17 @@ export default defineComponent({
               </v-col>
               <v-col cols="5" classes="d-flex justify-content-start align-items-center">
                 <div class="me-2">Cognitiva</div>
-                <input class="form-control form-mr-readonly w-40px" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'cognitiva' ? 'X' : ''" disabled readonly />
                 <div class="ms-4 me-2">Locomoção</div>
-                <input class="form-control form-mr-readonly w-40px" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'locomoção' ? 'X' : ''" disabled readonly />
                 <div class="ms-4 me-2">Visão</div>
-                <input class="form-control form-mr-readonly w-40px" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'visão' ? 'X' : ''" disabled readonly />
                 <div class="ms-4 me-2">Audição</div>
-                <input class="form-control form-mr-readonly w-40px" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'audição' ? 'X' : ''" disabled readonly />
               </v-col>
               <v-col cols="5" classes="d-flex justify-content-start align-items-center">
                 <div class="text-nowrap me-3">Outras: </div>
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="['cognitiva','locomoção','visão','audição'].indexOf(medicalRecord.limitation?.toLowerCase()) === -1 ? medicalRecord.limitation : ''" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -218,7 +266,7 @@ export default defineComponent({
                 <div class="text-nowrap me-3">Alergia: </div>
               </v-col>
               <v-col cols="10" classes="d-flex justify-content-start align-items-center">
-                <input class="form-control form-mr-readonly" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="medicalRecord.allergy" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-5">
