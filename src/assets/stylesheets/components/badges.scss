@@ -16,4 +16,14 @@
     background-color: rgba(255, 0, 0, 0.15);
     color: #FB6363;
   }
+
+  &.info {
+    background-color: rgba(57, 208, 255, 0.2);
+    color: #39D0FF;
+  }
+
+  &.warning {
+    background-color: rgba(221, 203, 41, 0.2);
+    color: #DDCB29;
+  }
 }

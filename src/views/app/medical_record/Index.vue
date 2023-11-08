@@ -7,7 +7,7 @@ import Printer from 'vue-material-design-icons/Printer.vue'
 import Download from 'vue-material-design-icons/Download.vue'
 import {getMedicalRecordByID} from "@/services/medical_record_service";
 import type {ResponseMedicalRecord} from "@/interfaces";
-import {formatDate} from "@/utils";
+import {formatDate, formatTelephone} from "@/utils";
 
 const pdf = new jsPDF('l', 'pt', [1450, 1020])
 export default defineComponent({
@@ -40,6 +40,13 @@ export default defineComponent({
       allergy: ""
     }
   }),
+  watch: {
+    'medicalRecord.telephone': function(tel: string) {
+      if (tel.trim().length > 0) {
+        this.medicalRecord.telephone = formatTelephone(tel)
+      }
+    }
+  },
   methods: {
     downloadMedicalRecord(printOrDownload = 'print') {
       const body: string | HTMLElement = document.getElementById("doc-pdf") ?? 'Documento não encontrado'
@@ -112,6 +119,27 @@ export default defineComponent({
         this.medicalRecord.date_of_birth = formatDate(this.medicalRecord.date_of_birth)
       }).
       catch(err => console.info(err))
+    },
+    returnGender(gender: string): string {
+      if (this.medicalRecord.gender?.toUpperCase() === gender?.toUpperCase()) return 'X'
+      else return ''
+    },
+    returnAddress(): string {
+      return this.medicalRecord.street + ", " +
+        this.medicalRecord.number + ", " +
+        this.medicalRecord.neighborhood + ", " +
+        this.medicalRecord.zip_code + ", " +
+        `${this.medicalRecord.complement+', ' ?? ''}` +
+        this.medicalRecord.city + "-" + this.medicalRecord.state
+    },
+    returnLimitation(limitation = ''): string {
+      if (this.medicalRecord.limitation?.toUpperCase() === limitation?.toUpperCase()) {
+        return 'X'
+      } else if (limitation === '') {
+        return this.medicalRecord.limitation
+      } else {
+        return ''
+      }
     }
   },
   async mounted() {
@@ -124,7 +152,7 @@ export default defineComponent({
   <div>
     <div class="d-flex justify-content-between align-items-center mb-4">
      <div class="d-flex align-items-center">
-       <router-link :to="{ name: 'unit', params: { id: route.params.id } }" class="title-page" v-if="route.name === 'medical-record-unit'">Unidade {{ route.params.id }}</router-link>
+       <router-link :to="{ name: 'unit', params: { id: medicalRecord.unit_id } }" class="title-page" v-if="route.name === 'medical-record-unit'">{{ medicalRecord.unit_name }}</router-link>
        <router-link :to="{ name: 'patients' }" class="title-page" v-else>Pacientes</router-link>
        <i class="bi-chevron-right fw-bold ms-2 me-2 font-color-black-10"></i>
        <div class="title-page">Prontuário</div>
@@ -178,9 +206,9 @@ export default defineComponent({
               <v-col cols="6" classes="d-flex justify-content-end align-items-center">
                 <div class="text-nowrap me-5">Gênero: </div>
                 <div class="me-2">M</div>
-                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.gender?.toUpperCase() === 'M' ? 'X' : ''" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="returnGender('M')" disabled readonly />
                 <div class="ms-4 me-2">F</div>
-                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.gender?.toUpperCase() === 'F' ? 'X' : ''" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="returnGender('F')" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -189,12 +217,7 @@ export default defineComponent({
               </v-col>
               <v-col cols="10" classes="d-flex justify-content-start align-items-center">
                 <input class="form-control form-mr-readonly"
-                       :value="`${medicalRecord.street},
-                        ${medicalRecord.number},
-                        ${medicalRecord.neighborhood},
-                        ${medicalRecord.zip_code},
-                        ${medicalRecord.complement + ',' ?? ''}
-                        ${medicalRecord.city} - ${medicalRecord.state}.`"
+                       :value="returnAddress()"
                        disabled readonly />
               </v-col>
             </v-row>
@@ -248,17 +271,17 @@ export default defineComponent({
               </v-col>
               <v-col cols="5" classes="d-flex justify-content-start align-items-center">
                 <div class="me-2">Cognitiva</div>
-                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'cognitiva' ? 'X' : ''" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="returnLimitation('COGNITIVA')" disabled readonly />
                 <div class="ms-4 me-2">Locomoção</div>
-                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'locomoção' ? 'X' : ''" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="returnLimitation('LOCOMOÇÃO')" disabled readonly />
                 <div class="ms-4 me-2">Visão</div>
-                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'visão' ? 'X' : ''" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="returnLimitation('VISÃO')" disabled readonly />
                 <div class="ms-4 me-2">Audição</div>
-                <input class="form-control form-mr-readonly w-40px" :value="medicalRecord.limitation?.toLowerCase() === 'audição' ? 'X' : ''" disabled readonly />
+                <input class="form-control form-mr-readonly w-40px" :value="returnLimitation('AUDIÇÃO')" disabled readonly />
               </v-col>
               <v-col cols="5" classes="d-flex justify-content-start align-items-center">
                 <div class="text-nowrap me-3">Outras: </div>
-                <input class="form-control form-mr-readonly" :value="['cognitiva','locomoção','visão','audição'].indexOf(medicalRecord.limitation?.toLowerCase()) === -1 ? medicalRecord.limitation : ''" disabled readonly />
+                <input class="form-control form-mr-readonly" :value="returnLimitation()" disabled readonly />
               </v-col>
             </v-row>
             <v-row classes="mt-4">
@@ -277,7 +300,7 @@ export default defineComponent({
               </v-col>
               <v-col cols="6" classes="d-flex justify-content-center align-items-center">
                 <div class="signature-responsible">
-                  Assinatura e carimbo do médico
+                  Assinatura e carimbo do médico(a)
                 </div>
               </v-col>
             </v-row>

@@ -23,3 +23,10 @@ export const routeUnitListPatients: string = '/units/patients'
 
 // MEDICAL RECORD SERVICE ====================================================
 export const routeMedicalRecordFindByID: string = '/medical_record/find_by_id'
+
+// PATIENT SERVICE ===========================================================
+export const routePatientTotalizators: string = '/patients/totalizators'
+export const routePatientList: string = '/patients/list'
+
+// STATUS SERVICE ============================================================
+export const routeStatusList: string = '/status/list'

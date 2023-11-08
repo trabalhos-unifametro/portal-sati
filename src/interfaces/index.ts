@@ -129,3 +129,39 @@ export interface ResponseMedicalRecord {
   unit_name:            string
   zip_code:             string
 }
+
+export interface Status {
+  id: number
+  name: string
+}
+
+export interface ResponseTotalizatorsPatient {
+  total:                 number
+  hospitalized_patients: number
+  waiting_patients:      number
+}
+
+export interface ResponsePatient {
+  patient_id:                    number
+  unit_id:                       number
+  hospitalization_code:          number
+  patient_name:                  string
+  expected_hospitalization_time: string
+  current_hospitalization_time:  string
+  situation_id:                  number
+  situation:                     string
+  status_id:                     number
+  status:                        string
+  medical_record_id:             number
+  mother_name:                   string
+  cpf:                           string
+  gender:                        string
+  unit_name:                     string
+  street:                        string
+  number:                        number
+  neighborhood:                  string
+  city:                          string
+  state:                         string
+  zip_code:                      string
+  complement:                    string
+}

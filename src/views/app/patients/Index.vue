@@ -5,14 +5,21 @@ import Card from "@/components/Card.vue";
 import InputTemplate from "@/components/InputTemplate.vue";
 import DataTable from "@/components/DataTable.vue";
 import Pagination from "@/components/Pagination.vue";
+import {getPatientsList, getPatientsTotalizators} from "@/services/patient_service";
+import {capitalize, formatCPF, formatDate, isFilled} from "@/utils";
+import {getListStatus} from "@/services/status_service";
+import type {ResponsePatient, ResponseTotalizatorsPatient, Status} from "@/interfaces";
 
 export default defineComponent({
   components: {InputTemplate, Card, DataTable, Pagination},
-  data: () => ({
+  data: (): any => ({
     route: useRoute(),
     filters: {
       patient: '',
-      statusOptions: ['Dentro do período', 'Fora do período'],
+      situationOptions: ['Dentro do período', 'Fora do período'],
+      situationPatient: '',
+      statusOptions: [],
+      statusIDs: [],
       statusPatient: '',
       sortPatientOptions: ['Crescente', 'Decrescente'],
       sortPatient: '',
@@ -22,29 +29,129 @@ export default defineComponent({
       { label: 'Nome', key: 'name' },
       { label: 'Tempo de internação geral', key: 'expected_hospitalization_time' },
       { label: 'Tempo de internação atual', key: 'current_hospitalization_time' },
+      { label: 'Situação', key: 'situation' },
       { label: 'Status', key: 'status' },
-      { label: 'Prontuário', key: 'medical_record' },
+      { label: 'Prontuário', key: 'medical_record_id' },
       { label: 'Detalhes', key: 'details' },
     ],
-    items: [
-      { id: 1, hospitalization_code: 'TESTE 1', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 2, hospitalization_code: 'TESTE 2', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 3, hospitalization_code: 'TESTE 3', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 4, hospitalization_code: 'TESTE 4', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 5, hospitalization_code: 'TESTE 5', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 6, hospitalization_code: 'TESTE 6', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 7, hospitalization_code: 'TESTE 7', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 8, hospitalization_code: 'TESTE 8', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 9, hospitalization_code: 'TESTE 9', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 1, status: 'Dentro do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-      { id: 10, hospitalization_code: 'TESTE 10', name: 'TESTE 1', expected_hospitalization_time: 'TESTE 1', current_hospitalization_time: 'TESTE 1', status_id: 2, status: 'Fora do período', medical_record: 'TESTE 1', _details: false, more_details: { mother_name: 'TESTE', cpf: '000.000.000-00', gender: 'M', unit: 'Unidade', address: { street: 'Rua completo teste', number: 0, neighborhood: 'Bairro completo teste', city: 'Cidade', state: 'estado' } } },
-    ],
+    items: [],
     currentPage: 1,
-    perPage: 10
+    perPage: 10,
+    totalizators: {
+      total: 0,
+      hospitalized_patients: 0,
+      waiting_patients: 0
+    },
+    searching: false
   }),
   methods: {
+    async listPatients(filters="") {
+      this.items = []
+      await getPatientsList(filters).
+      then(response => {
+        const patients: ResponsePatient[] = response.data ?? []
+        for (const patient of patients) {
+          this.items.push({
+            id: patient.patient_id,
+            hospitalization_code: patient.hospitalization_code,
+            name: patient.patient_name,
+            expected_hospitalization_time: formatDate(patient.expected_hospitalization_time),
+            current_hospitalization_time: formatDate(patient.current_hospitalization_time),
+            situation_id: patient.situation_id,
+            situation: patient.situation,
+            status: capitalize(patient.status),
+            status_id: patient.status_id,
+            medical_record_id: patient.medical_record_id,
+            _details: false,
+            more_details: {
+              mother_name: patient.mother_name,
+              cpf: formatCPF(patient.cpf),
+              gender: patient.gender,
+              unit: patient.unit_name,
+              address: {
+                street: patient.street,
+                number: patient.number,
+                neighborhood: patient.neighborhood,
+                city: patient.city,
+                state: patient.state,
+                complement: patient.complement,
+                zip_code: patient.zip_code,
+              }
+            }
+          })
+        }
+      }).
+      catch(err => console.info(err))
+    },
+    async getTotalizators(filters="") {
+      await getPatientsTotalizators(filters).
+      then(response => {
+        const totalizators: ResponseTotalizatorsPatient = response.data
+        this.totalizators.total = totalizators.total
+        this.totalizators.hospitalized_patients = totalizators.hospitalized_patients
+        this.totalizators.waiting_patients = totalizators.waiting_patients
+      }).
+      catch(err => console.info(err))
+    },
+    async listStatus() {
+      this.filters.statusOptions = []
+      this.filters.statusIDs = []
+      await getListStatus("?t=mr").
+      then(response => {
+        const list: Status[] = response.data
+        for (const status of list) {
+          if (status.id !== 3) {
+            this.filters.statusOptions.push(capitalize(status.name))
+            this.filters.statusIDs.push(status.id)
+          }
+        }
+      }).
+      catch(err => console.info(err))
+    },
+    async applyFilters() {
+      let filtersTotalizators: string = "?utf8=✓"
+      let filtersList: string = "?utf8=✓"
+
+      if (isFilled(this.filters.patient)) {
+        filtersTotalizators += `&patient_name=${this.filters.patient}`
+        filtersList += `&patient_name=${this.filters.patient}`
+      }
+      if (isFilled(this.filters.situationPatient)) {
+        filtersTotalizators += `&situation_patient=${this.filters.situationPatient}`
+        filtersList += `&situation_patient=${this.filters.situationPatient}`
+      }
+      if (isFilled(this.filters.statusPatient)) {
+        const index: number = this.filters.statusOptions.indexOf(this.filters.statusPatient)
+        filtersTotalizators += `&status_id=${this.filters.statusIDs[index]}`
+        filtersList += `&status_id=${this.filters.statusIDs[index]}`
+      }
+      if (isFilled(this.filters.sortPatient)) {
+        filtersList += `&sort_by_patient=${this.filters.sortPatient}`
+      }
+      
+      await this.getTotalizators(filtersTotalizators)
+      await this.listPatients(filtersList)
+    },
+    async clearFilters() {
+      this.filters.patient = ''
+      this.filters.situationPatient = ''
+      this.filters.statusPatient = ''
+      this.filters.sortPatient = ''
+
+      await this.getTotalizators()
+      await this.listPatients()
+    },
     onPageChange(page: number) {
       this.currentPage = page
     }
+  },
+  async beforeMount() {
+    await this.listStatus()
+  },
+  async mounted() {
+    await this.getTotalizators()
+    await this.listPatients()
+    this.searching = false
   }
 });
 
@@ -55,13 +162,13 @@ export default defineComponent({
     <div class="title-page mb-4">Pacientes</div>
     <v-row>
       <v-col cols="4">
-        <card title="50" subtitle="Total de pacientes" />
+        <card :title="totalizators.total.toString()" subtitle="Total de pacientes" />
       </v-col>
       <v-col cols="4">
-        <card title="44" subtitle="Pacientes em unidades" />
+        <card :title="totalizators.hospitalized_patients.toString()" subtitle="Pacientes internados" />
       </v-col>
       <v-col cols="4">
-        <card title="6" subtitle="Pacientes em espera" />
+        <card :title="totalizators.waiting_patients" subtitle="Pacientes em espera" />
       </v-col>
     </v-row>
     <v-row classes="mt-xxl-5">
@@ -78,22 +185,37 @@ export default defineComponent({
           </template>
         </InputTemplate>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="2">
         <InputTemplate
-            id="filter-status-patient"
-            placeholder="Situação do paciente"
-            v-model="filters.statusPatient"
-            type="text"
-            :prefix-icon-without-border="true"
-            :select="true"
-            :options="filters.statusOptions"
+          id="filter-situation-patient"
+          placeholder="Situação do paciente"
+          v-model="filters.situationPatient"
+          type="text"
+          :prefix-icon-without-border="true"
+          :select="true"
+          :options="filters.situationOptions"
         >
           <template #prefix-input>
             <i class="bi-search font-size-20px font-color-black-3 suffix-icon"></i>
           </template>
         </InputTemplate>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="2">
+        <InputTemplate
+          id="filter-status-patient"
+          placeholder="Status do paciente"
+          v-model="filters.statusPatient"
+          type="text"
+          :prefix-icon-without-border="true"
+          :select="true"
+          :options="filters.statusOptions"
+        >
+          <template #prefix-input>
+            <i class="bi-search font-size-20px font-color-black-3 suffix-icon"></i>
+          </template>
+        </InputTemplate>
+      </v-col>
+      <v-col cols="2">
         <InputTemplate
             id="filter-sort-by-patient"
             placeholder="Ordenar por paciente"
@@ -106,22 +228,25 @@ export default defineComponent({
         </InputTemplate>
       </v-col>
       <v-col cols="1">
-        <button class="btn btn-primary w-100">Filtrar</button>
+        <button type="button" class="btn btn-primary w-100" @click="applyFilters">Filtrar</button>
       </v-col>
       <v-col cols="1">
-        <button class="btn btn-outline-primary w-100">Limpar</button>
+        <button type="button" class="btn btn-outline-primary w-100" @click="clearFilters">Limpar</button>
       </v-col>
     </v-row>
     <v-row classes="mt-xxl-4">
       <v-col cols="12">
         <data-table :headers="headers" :items="items" :current-page="currentPage" :per-page="perPage">
-          <template #status="{ item }">
-            <div class="badge" :class="{ 'success': item?.status_id === 1, 'error': item?.status_id === 2 }"> {{ item?.status }} </div>
+          <template #situation="{ item }">
+            <div class="badge" :class="{ 'success': item?.situation_id === 1, 'error': item?.situation_id === 2 }"> {{ item?.situation }} </div>
           </template>
-          <template #medical_record="{ item }">
+          <template #status="{ item }">
+            <div class="badge" :class="{ 'info': item?.status_id === 1, 'warning': item?.status_id === 2 }"> {{ item?.status }} </div>
+          </template>
+          <template #medical_record_id="{ item }">
             <router-link
                 class="btn-icon-outline-primary"
-                :to="{ name: 'medical-record-patient', params: { id: item?.id } }"
+                :to="{ name: 'medical-record-patient', params: { id: item?.medical_record_id } }"
             >
               <i class="bi-clipboard2-pulse"></i>
             </router-link>
@@ -131,7 +256,7 @@ export default defineComponent({
               <i class="bi-plus-lg rotate" :class="{ 'deg-45': item._details }"></i>
             </button>
           </template>
-          <template #row-details="{ item, index }">
+          <template #row-details="{ item }">
             <div class="card border-0">
               <div class="card-body p-4">
                 <div class="d-flex justify-content-start align-items-center">
@@ -142,11 +267,13 @@ export default defineComponent({
                 </div>
                 <div class="fw-bold mt-2 mb-1">Endereço</div>
                 <div class="d-flex justify-content-start align-items-center">
-                  <span class="me-3"><b>Rua:</b> {{ `${item?.more_details?.address?.street} ${index}` }}, </span>
+                  <span class="me-3"><b>Rua:</b> {{ `${item?.more_details?.address?.street}` }}, </span>
                   <span class="me-3"><b>número:</b> {{ item?.more_details?.address?.number }}, </span>
-                  <span class="me-3"><b>bairro:</b> {{ `${item?.more_details?.address?.neighborhood} ${index}` }}, </span>
-                  <span class="me-3"><b>cidade:</b> {{ `${item?.more_details?.address?.city} ${index}` }}, </span>
-                  <span class="me-3"><b>estado:</b> {{ `${item?.more_details?.address?.state} ${index}` }} </span>
+                  <span class="me-3"><b>bairro:</b> {{ `${item?.more_details?.address?.neighborhood}` }}, </span>
+                  <span class="me-3"><b>cep:</b> {{ `${item?.more_details?.address?.zip_code}` }}, </span>
+                  <span class="me-3"><b>cidade:</b> {{ `${item?.more_details?.address?.city}` }}, </span>
+                  <span class="me-3"><b>estado:</b> {{ `${item?.more_details?.address?.state}` }} </span>
+                  <span class="me-3" v-if="item?.more_details?.address?.state"><b>complemento:</b> {{ `${item?.more_details?.address?.complement}` }} </span>
                 </div>
               </div>
             </div>

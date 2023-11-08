@@ -37,7 +37,8 @@ export default defineComponent({
       qtdMax: 0,
       qtdPatients: 0,
       vacancies: 0
-    }
+    },
+    searching: false
   }),
   methods: {
     async getTotalizators(filters="") {
@@ -92,6 +93,7 @@ export default defineComponent({
       catch(err => console.info(err))
     },
     async applyFilters() {
+      this.searching = true
       let filtersTotalizators: string = "?utf8=✓"
       let filtersPatients: string = "?utf8=✓"
 
@@ -111,6 +113,7 @@ export default defineComponent({
       await this.getListPatientsByUnit(filtersPatients)
     },
     async clearFilters() {
+      this.searching = true
       this.filters.patient = ""
       this.filters.sortPatient = ""
       this.filters.statusPatient = ""
@@ -125,6 +128,7 @@ export default defineComponent({
   async mounted() {
     await this.getTotalizators()
     await this.getListPatientsByUnit()
+    this.searching = false
   }
 });
 
@@ -196,7 +200,7 @@ export default defineComponent({
         <button class="btn btn-outline-primary w-100" @click="clearFilters">Limpar</button>
       </v-col>
     </v-row>
-    <v-row classes="mt-xxl-4">
+    <v-row classes="mt-4" v-if="patients.length > 0">
       <v-col cols="12">
         <data-table :headers="headers" :items="patients" :current-page="currentPage" :per-page="perPage">
           <template #situation="{ item }">
@@ -221,8 +225,7 @@ export default defineComponent({
                 <div class="d-flex justify-content-start align-items-center">
                   <span class="me-5"><b>Nome da mãe:</b> {{ item?.more_details?.mother_name }} </span>
                   <span class="me-5"><b>CPF:</b> {{ item?.more_details?.cpf }} </span>
-                  <span class="me-5"><b>Gênero:</b> {{ item?.more_details?.gender }} </span>
-                  <span><b>Unidade:</b> {{ item?.more_details?.unit_name }} </span>
+                  <span><b>Gênero:</b> {{ item?.more_details?.gender }} </span>
                 </div>
                 <div class="fw-bold mt-2 mb-1">Endereço</div>
                 <div class="d-flex justify-content-start align-items-center">
@@ -239,17 +242,33 @@ export default defineComponent({
           </template>
         </data-table>
       </v-col>
-    </v-row>
-    <v-row v-if="patients.length > perPage">
-      <v-col cols="12">
+      <v-col cols="12" classes="mt-2" v-if="patients.length > perPage">
         <div class="d-flex justify-content-center align-items-center w-100">
           <pagination
-            :rows="patients.length"
-            :perPage="perPage"
-            :currentPage="currentPage"
-            @pagechanged="onPageChange"
+              :rows="patients.length"
+              :perPage="perPage"
+              :currentPage="currentPage"
+              @pagechanged="onPageChange"
           />
         </div>
+      </v-col>
+    </v-row>
+    <v-row classes="mt-4" v-else-if="patients.length === 0 && searching">
+      <v-col cols="12">
+        <card classes-body="d-flex justify-content-center align-items-center pb-5 pt-5">
+          <template #content-with-body>
+            <span class="font-size-20px">Nenhum resultado encontrado</span>
+          </template>
+        </card>
+      </v-col>
+    </v-row>
+    <v-row classes="mt-4" v-else-if="patients.length === 0 && !searching">
+      <v-col cols="12">
+        <card classes-body="d-flex justify-content-center align-items-center pb-5 pt-5">
+          <template #content-with-body>
+            <span class="font-size-20px">Nenhuma unidade encontrada</span>
+          </template>
+        </card>
       </v-col>
     </v-row>
   </div>
