@@ -25,6 +25,11 @@ export const session = defineStore('session', () => {
         localStorage.setItem('session-sati', JSON.stringify(newUser))
     }
 
+    function updateSession(newUser: UserSession) {
+        user.value = newUser
+        localStorage.setItem('session-sati', JSON.stringify(newUser))
+    }
+
     function logout() {
         user.value = null
         localStorage.removeItem('session-sati')
@@ -36,5 +41,6 @@ export const session = defineStore('session', () => {
         isLoggedIn,
         logout,
         saveSession,
+        updateSession,
     } as const
 })

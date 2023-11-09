@@ -473,7 +473,7 @@ export default defineComponent({
           acessar a dashboard.
         </div>
         <form @submit.prevent="logIn">
-          <InputTemplate
+          <input-template
             id="email"
             placeholder="Email"
             :errors="{ err: errors.email.error, message: errors.email.message}"
@@ -485,8 +485,8 @@ export default defineComponent({
                 <i class="bi-person-fill font-size-18px font-color-black-3 suffix-icon"></i>
               </div>
             </template>
-          </InputTemplate>
-          <InputTemplate
+          </input-template>
+          <input-template
             id="password"
             placeholder="Senha"
             :errors="{ err: errors.password.error, message: errors.password.message }"
@@ -504,7 +504,7 @@ export default defineComponent({
                   :class="{ 'bi-eye-slash-fill': !passwordVisible, 'bi-eye-fill': passwordVisible }" @click="passwordVisible = !passwordVisible"
               ></i>
             </template>
-          </InputTemplate>
+          </input-template>
           <div class="d-flex w-100 justify-content-end align-items-center">
             <a
               class="font-color-template-primary font-size-15px link-template-1"
@@ -529,7 +529,7 @@ export default defineComponent({
                     <span class="font-size-16px font-color-template-primary fw-normal">
                       Informe seu email no campo abaixo e será enviado um código para redefinir sua senha.
                     </span>
-                    <InputTemplate
+                    <input-template
                       id="email-recover"
                       placeholder="Email"
                       class="mt-3"
@@ -542,7 +542,7 @@ export default defineComponent({
                           <At :size="18" class="font-color-black-3 suffix-icon"></At>
                         </div>
                       </template>
-                    </InputTemplate>
+                    </input-template>
                   </div>
                   <div class="second-tab-recover-password" :class="{ 'hidden': recoverPassword.tabSelected !== 1 }">
                     <span class="font-size-16px font-color-template-primary fw-normal">
@@ -567,7 +567,7 @@ export default defineComponent({
                     <div class="font-size-16px font-color-template-primary fw-bold mb-4">
                       Falta pouco ! Agora informe sua nova senha dentro dos requisitos abaixo, confirme a nova senha e clique em finalizar.
                     </div>
-                    <InputTemplate
+                    <input-template
                         id="new-password"
                         placeholder="Informe sua nova senha"
                         classes="mt-4"
@@ -586,8 +586,8 @@ export default defineComponent({
                             :class="{ 'bi-eye-slash-fill': !recoverPassword.newPasswordVisible, 'bi-eye-fill': recoverPassword.newPasswordVisible }" @click="recoverPassword.newPasswordVisible = !recoverPassword.newPasswordVisible"
                         ></i>
                       </template>
-                    </InputTemplate>
-                    <InputTemplate
+                    </input-template>
+                    <input-template
                         id="confirm-new-password"
                         placeholder="Confirme sua nova senha"
                         :errors="{ err: recoverPassword.errors.confirmNewPassword.err, message: recoverPassword.errors.confirmNewPassword.message }"
@@ -605,7 +605,7 @@ export default defineComponent({
                             :class="{ 'bi-eye-slash-fill': !recoverPassword.confirmNewPasswordVisible, 'bi-eye-fill': recoverPassword.confirmNewPasswordVisible }" @click="recoverPassword.confirmNewPasswordVisible = !recoverPassword.confirmNewPasswordVisible"
                         ></i>
                       </template>
-                    </InputTemplate>
+                    </input-template>
                     <div class="font-size-12px font-color-template-primary">
                       <span :class="{ 'text-success': recoverPassword.requirements.minimumCharacters, 'text-danger': recoverPassword.requirements.minimumCharacters === false }">
                         <i class="bi-check-circle font-size-10px me-1" v-if="recoverPassword.requirements.minimumCharacters"></i>

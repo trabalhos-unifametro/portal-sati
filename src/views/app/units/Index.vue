@@ -4,7 +4,7 @@ import Card from "@/components/Card.vue";
 import InputTemplate from "@/components/InputTemplate.vue";
 import CardUnit from "@/components/CardUnit.vue";
 import {dashboardTotalizatorsUnits} from "@/services/dashboard_service";
-import {ResponseDashboardTotalizatorsUnits, ResponseUnit} from "@/interfaces";
+import type {ResponseDashboardTotalizatorsUnits, ResponseUnit} from "@/interfaces";
 import {getListUnits} from "@/services/unit_service";
 import {isFilled} from "@/utils";
 

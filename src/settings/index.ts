@@ -30,3 +30,7 @@ export const routePatientList: string = '/patients/list'
 
 // STATUS SERVICE ============================================================
 export const routeStatusList: string = '/status/list'
+
+// USER SERVICE ==============================================================
+export const routeUserUpdate: string = '/user/update'
+export const routeUserMyData: string = '/user/mydata'

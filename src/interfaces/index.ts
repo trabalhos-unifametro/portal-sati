@@ -165,3 +165,9 @@ export interface ResponsePatient {
   zip_code:                      string
   complement:                    string
 }
+
+export interface UpdateUser {
+  id:        number
+  email:     string
+  cellphone: string
+}

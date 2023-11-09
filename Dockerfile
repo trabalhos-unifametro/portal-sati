@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18.17.1-alpine
 LABEL authors="rafael"
 
 RUN npm install -g http-server

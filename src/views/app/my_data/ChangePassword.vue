@@ -36,7 +36,7 @@ export default defineComponent({
   <div>
     <div class="title-page mb-4">Redefinir senha</div>
     <card classes="ps-5 pe-5 pt-4 pb-4">
-      <template #content-with-body>
+      <template #content-without-body>
         <v-row>
           <v-col cols="6" classes="pe-5">
             <v-row classes="mb-4">

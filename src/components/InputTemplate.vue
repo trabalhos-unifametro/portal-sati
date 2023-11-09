@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useSlots, computed, ref, watch, onMounted} from "vue";
+import { vMaska } from "maska"
 
 const slots = useSlots()
 const hasFocused = ref(false)
@@ -35,6 +36,10 @@ const props = defineProps({
     type: Array,
     // eslint-disable-next-line vue/require-valid-default-prop
     default: []
+  },
+  mask: {
+    type: String,
+    default: ''
   }
 })
 
@@ -108,6 +113,7 @@ onMounted(() => {
       :type="props.type"
       v-model="model"
       :placeholder="props.placeholder"
+      v-maska :data-maska="props.mask"
       class="form-control"
       :class="{ 'has-prefix': prefixIconSlot, 'has-suffix': suffixIconSlot || (props.select && model.toString().length === 0), 'has-suffix-select': (props.select && model.toString().length > 0) }"
       :id="props.id"
