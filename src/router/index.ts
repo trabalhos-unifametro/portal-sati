@@ -60,14 +60,14 @@ const router = createRouter({
             title: 'Prontuário médico'
           }
         },
-        {
-          path: '/usuarios',
-          name: 'users',
-          component: import('../views/app/users/Index.vue'),
-          meta: {
-            title: 'Usuários'
-          }
-        },
+        // {
+        //   path: '/usuarios',
+        //   name: 'users',
+        //   component: import('../views/app/users/Index.vue'),
+        //   meta: {
+        //     title: 'Usuários'
+        //   }
+        // },
         {
           path: '/meus-dados',
           name: 'my-data',

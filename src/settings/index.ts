@@ -33,4 +33,8 @@ export const routeStatusList: string = '/status/list'
 
 // USER SERVICE ==============================================================
 export const routeUserUpdate: string = '/user/update'
-export const routeUserMyData: string = '/user/mydata'
+export const routeChangePassword: string = '/user/change_password'
+
+// NOTIFICATION SERVICE
+export const routeNotificationList: string = '/notifications/list'
+export const routeNotificationRead: string = '/notifications/read'

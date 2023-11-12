@@ -171,3 +171,25 @@ export interface UpdateUser {
   email:     string
   cellphone: string
 }
+
+export interface ChangePassword {
+  id:                   number
+  current_password:     string
+  new_password:         string
+  confirm_new_password: string
+}
+
+export interface NotificationItem {
+  id: number
+  title: string
+  message: string
+  created_at: string
+  type: string
+  read: boolean
+  patient_id?: number
+  unit_id?: number
+}
+
+export interface ReadNotification {
+  id: number
+}

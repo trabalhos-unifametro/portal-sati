@@ -9,11 +9,13 @@ import {getPatientsList, getPatientsTotalizators} from "@/services/patient_servi
 import {capitalize, formatCPF, formatDate, isFilled} from "@/utils";
 import {getListStatus} from "@/services/status_service";
 import type {ResponsePatient, ResponseTotalizatorsPatient, Status} from "@/interfaces";
+import {SelectedNotification} from "@/stores/notifications";
 
 export default defineComponent({
   components: {InputTemplate, Card, DataTable, Pagination},
   data: (): any => ({
     route: useRoute(),
+    selectedNotification: SelectedNotification(),
     filters: {
       patient: '',
       situationOptions: ['Dentro do período', 'Fora do período'],
@@ -77,7 +79,8 @@ export default defineComponent({
                 complement: patient.complement,
                 zip_code: patient.zip_code,
               }
-            }
+            },
+            selected: this.selectedNotification.patientID === patient.patient_id
           })
         }
       }).
@@ -111,6 +114,7 @@ export default defineComponent({
     async applyFilters() {
       let filtersTotalizators: string = "?utf8=✓"
       let filtersList: string = "?utf8=✓"
+      this.selectedNotification.setPatientID(undefined)
 
       if (isFilled(this.filters.patient)) {
         filtersTotalizators += `&patient_name=${this.filters.patient}`
@@ -137,13 +141,14 @@ export default defineComponent({
       this.filters.situationPatient = ''
       this.filters.statusPatient = ''
       this.filters.sortPatient = ''
+      this.selectedNotification.setPatientID(undefined)
 
       await this.getTotalizators()
       await this.listPatients()
     },
     onPageChange(page: number) {
       this.currentPage = page
-    }
+    },
   },
   async beforeMount() {
     await this.listStatus()

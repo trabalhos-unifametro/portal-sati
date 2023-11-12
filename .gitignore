@@ -29,3 +29,6 @@ coverage
 *.sln
 *.sw?
 package-lock.json
+
+# Local Netlify folder
+.netlify

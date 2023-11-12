@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
+// import AccountMultiple from "vue-material-design-icons/AccountMultiple.vue";
 import TooltipAccount from "vue-material-design-icons/TooltipAccount.vue";
 import HospitalBox from "vue-material-design-icons/HospitalBox.vue";
 import VDashboard from "vue-material-design-icons/ViewDashboard.vue";
@@ -81,10 +81,10 @@ onMounted(() => {
         <tooltip-account size="30"></tooltip-account>
         <span class="fw-medium font-size-20px ms-3 label-menu">Pacientes</span>
       </router-link>
-      <router-link to="/usuarios" class="left-sidebar-item" :class="{ 'active': index === 3 }">
-        <account-multiple size="30"></account-multiple>
-        <span class="fw-medium font-size-20px ms-3 label-menu">Usuários</span>
-      </router-link>
+<!--      <router-link to="/usuarios" class="left-sidebar-item" :class="{ 'active': index === 3 }">-->
+<!--        <account-multiple size="30"></account-multiple>-->
+<!--        <span class="fw-medium font-size-20px ms-3 label-menu">Usuários</span>-->
+<!--      </router-link>-->
     </div>
   </div>
 </template>

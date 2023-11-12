@@ -1,17 +1,18 @@
-FROM node:18.17.1-alpine
-LABEL authors="rafael"
-
-RUN npm install -g http-server
-
+FROM node:18.17.1-alpine as builder
+LABEL authors="Rafael Leonan"
+RUN mkdir /app
 WORKDIR /app
+ADD package-lock.json .
+ADD package.json .
+RUN npm ci
+ADD . .
+RUN npm run build
 
-COPY package*.json ./
+FROM devforth/spa-to-http:latest
+COPY --from=builder /app/dist/ .
 
-RUN npm install
-
-COPY . .
-
-RUN npm run build-only
-
-EXPOSE 8080
-CMD [ "http-server", "dist" ]
+#FROM nginx:1.25.3-alpine AS production
+#COPY nginx.conf /etc/nginx/nginx.conf
+#COPY --from=builder /app/dist /usr/share/nginx/html
+#EXPOSE 80
+#CMD ["nginx", "-g", "daemon off;"]

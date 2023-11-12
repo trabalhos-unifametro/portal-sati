@@ -22,10 +22,10 @@ const index: Ref<UnwrapRef<Number | undefined>> = ref(props.index)
 </script>
 
 <template>
-  <tr>
+  <tr :class="{ 'selected-row': props.item['selected'] === true }">
     <slot></slot>
   </tr>
-  <tr v-if="props.item?._details === true">
+  <tr v-if="props.item?._details === true" :class="{ 'selected-row': props.item['selected'] === true }">
     <td :colspan="props.keys?.length">
       <slot name="row-details" :item="item" :index="index"></slot>
     </td>

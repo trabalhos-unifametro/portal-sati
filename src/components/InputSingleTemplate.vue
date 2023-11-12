@@ -11,7 +11,7 @@ const props = defineProps({
   isSeparator: Boolean,
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'key-up', 'focus-out'])
 
 const model = computed({
   get () {

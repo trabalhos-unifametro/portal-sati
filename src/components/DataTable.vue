@@ -77,7 +77,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .table {
     &.v-table {
       border-radius: 5px;
@@ -120,6 +120,25 @@ onMounted(() => {
 
             &:first-child {
               border-left: 1px solid rgba(0,0,0,0.2);
+            }
+          }
+
+          &.selected-row {
+            td {
+              background-color: rgba(28, 111, 119, 0.98) !important;
+              color: #fff;
+
+              .btn-icon-outline-primary {
+                i {
+                  color: rgba(255,255,255,0.8);
+                }
+
+                &:hover {
+                  i {
+                    color: rgba(255,255,255, 1);
+                  }
+                }
+              }
             }
           }
 

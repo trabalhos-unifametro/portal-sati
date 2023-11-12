@@ -1,4 +1,5 @@
 import {
+  routeChangePassword,
   routeConfirmCode,
   routeGenerateCode,
   routeRecoverPassword,
@@ -7,6 +8,7 @@ import {
 } from "@/settings";
 import {apis} from "@/services/api";
 import type {
+  ChangePassword,
   RequestConfirmCode,
   RequestGenerateCode,
   RequestRecoverPassword,
@@ -23,3 +25,4 @@ export const confirmCode = async (body: RequestConfirmCode) => await apis().post
 export const recoverPassword = async (body: RequestRecoverPassword) => await apis().put(routeRecoverPassword, body)
 
 export const updateUser = async (user: UpdateUser) => await apis().put(`${routeUserUpdate}`, user)
+export const changePassword = async (user: ChangePassword) => await apis().put(`${routeChangePassword}`, user)

@@ -46,3 +46,16 @@ export const Notifications = defineStore('notifications', () => {
     notifications
   } as const
 })
+
+export const SelectedNotification = defineStore('selected-notification', () => {
+  const patientID: Ref<number | undefined> = ref(undefined)
+
+  function setPatientID(value: number | undefined) {
+    patientID.value = value
+  }
+
+  return {
+    setPatientID,
+    patientID
+  } as const
+})

@@ -109,8 +109,11 @@ export default defineComponent({
             not.set({message: 'Ocorre algum erro, tente novamente', variant: 'danger'})
           }
         }).catch((err) => {
-          console.log(err)
-          not.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
+          if (err.response) {
+            not.set({message: err.response.data, variant: 'danger'})
+          } else {
+            not.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
+          }
         })
       }
     },
@@ -159,7 +162,7 @@ export default defineComponent({
         if (err.response) {
           not.set({message: err.response.data, variant: 'danger'})
         } else {
-          not.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'success'})
+          not.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'danger'})
         }
       })
     },
@@ -179,9 +182,9 @@ export default defineComponent({
       .catch((err) => {
         this.recoverPassword.loadingBtns = false
         if (err.response) {
-          not.set({message: err.response.data, variant: 'success'})
+          not.set({message: err.response.data, variant: 'danger'})
         } else {
-          not.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'success'})
+          not.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'danger'})
         }
       })
     },
@@ -300,13 +303,16 @@ export default defineComponent({
         }
         recoverPassword(body)
         .then(res => {
-          console.log(res)
+          not.set({message: res.data, variant: 'success'})
+          modal.hide('recover-password-hide')
         })
         .catch(err => {
-          console.log(err)
+          if (err.response) {
+            not.set({message: err.response.data, variant: 'danger'})
+          } else {
+            not.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
+          }
         })
-      } else {
-        console.log('awdawd')
       }
     },
     async recoverPasswordTabs() {
@@ -629,7 +635,7 @@ export default defineComponent({
                         <i class="bi-check-circle font-size-10px me-1" v-if="recoverPassword.requirements.minimumSpecialCharacter"></i>
                         <i class="bi-x-circle font-size-10px me-1" v-else-if="recoverPassword.requirements.minimumSpecialCharacter === false"></i>
                         <i class="bi-circle-fill font-size-8px me-1" v-else></i>
-                        Precisa conter no mínimo 1 caractere especial (@#$!+_*&$ ou outro).
+                        Precisa conter no mínimo 1 caractere especial ({{ `!@#$%^&*()_+\-=[\]{};':"|,.<>/?~` }}).
                       </span><br/>
                       <span :class="{ 'text-success': recoverPassword.requirements.minimumNumber, 'text-danger': recoverPassword.requirements.minimumNumber === false }">
                         <i class="bi-check-circle font-size-10px me-1" v-if="recoverPassword.requirements.minimumNumber"></i>
