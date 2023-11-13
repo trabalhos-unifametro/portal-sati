@@ -9,14 +9,11 @@ import {emailsIsNotValid} from "@/utils";
 import {Notifications} from "@/stores/notifications";
 import InputTemplate from "@/components/InputTemplate.vue";
 
-const sessionStorage = session()
-const not = Notifications()
-
 export default defineComponent({
   components: { Card, InputTemplate },
   directives: { maska: vMaska },
   data: (): any => ({
-    user: sessionStorage.user,
+    user: undefined,
     form: {
       email: sessionStorage.user?.email,
       cellphone: sessionStorage.user?.cellphone
@@ -39,6 +36,7 @@ export default defineComponent({
      this.form.email = this.user?.email
     },
     async updateData() {
+      const not = Notifications()
       if (this.validateForm() && !this.loadingBtn) {
         this.loadingBtn = true
         let newUser: UserSession = this.user
@@ -63,6 +61,7 @@ export default defineComponent({
       }
     },
     validateForm(): boolean {
+      const not = Notifications()
       let countErrors: number = 0
 
       if (this.form.email.length === 0) {
@@ -107,6 +106,10 @@ export default defineComponent({
         this.clearErrorCellphone()
       }
     },
+  },
+  mounted() {
+    const sessionStorage = session()
+    this.user = sessionStorage.user
   }
 })
 </script>

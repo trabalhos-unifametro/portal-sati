@@ -1,5 +1,16 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {session} from "@/stores/session";
+import Dashboard from '@/views/app/dashboard/Index.vue';
+import Units from '@/views/app/units/Index.vue';
+import Unit from '@/views/app/units/Unit.vue';
+import Patients from '@/views/app/patients/Index.vue';
+import MedicalRecord from '@/views/app/medical_record/Index.vue';
+import MyData from '@/views/app/my_data/Index.vue';
+import ChangePassword from '@/views/app/my_data/ChangePassword.vue';
+import Login from '@/views/auth/Login.vue';
+import RecoverPassword from "@/views/auth/RecoverPassword.vue";
+import Template from '@/views/app/Index.vue';
+
 
 const DEFAULT_TITLE: string = 'Hospital Medical Care'
 
@@ -9,105 +20,35 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      redirect: '/dashboard',
-      component: import('../views/app/Index.vue'),
+      redirect: 'dashboard',
+      component: Template,
       children: [
-        {
-          path: '/dashboard',
-          name: 'dashboard',
-          component: import('../views/app/dashboard/Index.vue'),
-          meta: {
-            title: 'Dashboard'
-          }
-        },
-        {
-          path: '/unidades',
-          name: 'units',
-          component: import('../views/app/units/Index.vue'),
-          meta: {
-            title: 'Unidades'
-          }
-        },
-        {
-          path: '/unidades/:id',
-          name: 'unit',
-          component: import('../views/app/units/Unit.vue'),
-          meta: {
-            title: 'Unidade'
-          }
-        },
-        {
-          path: '/pacientes',
-          name: 'patients',
-          component: import('../views/app/patients/Index.vue'),
-          meta: {
-            title: 'Pacientes'
-          }
-        },
-        {
-          path: '/unidade/prontuario/:id',
-          name: 'medical-record-unit',
-          component: import('../views/app/medical_record/Index.vue'),
-          meta: {
-            title: 'Prontuário médico'
-          }
-        },
-        {
-          path: '/paciente/prontuario/:id',
-          name: 'medical-record-patient',
-          component: import('../views/app/medical_record/Index.vue'),
-          meta: {
-            title: 'Prontuário médico'
-          }
-        },
+        { path: '/dashboard', name: 'dashboard', component: Dashboard, meta: {title: 'Dashboard'} },
+        { path: '/unidades', name: 'units', component: Units, meta: {title: 'Unidades'} },
+        { path: '/unidades/:id', name: 'unit', component: Unit, meta: {title: 'Unidade'} },
+        { path: '/pacientes', name: 'patients', component: Patients, meta: {title: 'Pacientes'} },
+        { path: '/unidade/prontuario/:id', name: 'medical-record-unit', component: MedicalRecord, meta: {title: 'Prontuário médico'} },
+        { path: '/paciente/prontuario/:id', name: 'medical-record-patient', component: MedicalRecord, meta: {title: 'Prontuário médico'} },
         // {
         //   path: '/usuarios',
         //   name: 'users',
-        //   component: import('../views/app/users/Index.vue'),
+        //   component: import('@/views/app/users/Index.vue'),
         //   meta: {
         //     title: 'Usuários'
         //   }
         // },
-        {
-          path: '/meus-dados',
-          name: 'my-data',
-          component: import('../views/app/my_data/Index.vue'),
-          meta: {
-            title: 'Meus dados'
-          }
-        },
-        {
-          path: '/redefinir-senha',
-          name: 'redefine-password',
-          component: import('../views/app/my_data/ChangePassword.vue'),
-          meta: {
-            title: 'Redefinir senha'
-          }
-        },
+        { path: '/meus-dados', name: 'my-data', component: MyData, meta: {title: 'Meus dados'} },
+        { path: '/redefinir-senha', name: 'redefine-password', component: ChangePassword, meta: {title: 'Redefinir senha'} },
       ]
     },
     {
       path: '/auth',
       name: 'auth',
-      redirect: '/auth/login',
-      component: () => import('../views/auth/Index.vue'),
+      redirect: 'login',
+      component: () => import('@/views/auth/Index.vue'),
       children: [
-        {
-          path: 'login',
-          name: 'login',
-          component: import('../views/auth/Login.vue'),
-          meta: {
-            title: 'Login'
-          }
-        },
-        {
-          path: 'recover-password',
-          name: 'recover-password',
-          component: import('../views/auth/RecoverPassword.vue'),
-          meta: {
-            title: 'Recuperar senha'
-          }
-        },
+        { path: 'login', name: 'login', component: Login, meta: {title: 'Login'} },
+        { path: 'recover-password', name: 'recover-password', component: RecoverPassword, meta: {title: 'Recuperar senha'} },
       ]
     }
   ]

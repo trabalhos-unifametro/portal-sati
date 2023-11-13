@@ -8,13 +8,10 @@ import {session} from "@/stores/session";
 import {containsLowercase, containsNumbers, containsSpecialChars, containsUppercase, isFilled} from "@/utils";
 import {Notifications} from "@/stores/notifications";
 
-const not = Notifications()
-const sessionStorage = session()
-
 export default defineComponent({
   components: { Card, InputTemplate },
   data: (): any => ({
-    user: sessionStorage.user,
+    user: undefined,
     passwordVisible: false,
     passwordVisibleNew: false,
     passwordVisibleConfirm: false,
@@ -53,6 +50,7 @@ export default defineComponent({
       this.clearErrorsRequirements()
     },
     async updatePassword() {
+      const not = Notifications()
       let reqUnfulfilled: number = 0
       let passwordConfirmOk: boolean = true
 
@@ -184,6 +182,10 @@ export default defineComponent({
         this.errors.passwordConfirmNew.message = ''
       }
     }
+  },
+  mounted() {
+    const sessionStorage = session()
+    this.user = sessionStorage.user
   }
 })
 </script>

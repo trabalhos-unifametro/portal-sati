@@ -64,7 +64,7 @@ const redirectNotification = async (notification: NotificationItem) => {
 
 const logOut = () => {
   s.logout();
-  router.push({ name: 'login' })
+  router.replace('/auth/login')
 }
 
 onMounted(async () => {

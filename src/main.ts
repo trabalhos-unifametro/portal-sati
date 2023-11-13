@@ -7,7 +7,6 @@ import Row from "@/components/Row.vue";
 import Col from "@/components/Col.vue";
 import VueApexCharts from "vue3-apexcharts";
 import { createApp } from 'vue'
-
 import { createPinia } from 'pinia'
 import App from './App.vue'
 

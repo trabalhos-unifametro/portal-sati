@@ -3,13 +3,13 @@ import {defineComponent} from 'vue'
 import { Tooltip } from 'bootstrap'
 import LeftSidebar from "@/components/base/LeftSidebar.vue";
 import TopBar from "@/components/base/TopBar.vue";
-import Footer from "@/components/base/Footer.vue";
+import FooterKrl from "@/components/base/Footer.vue";
 
 export default defineComponent({
   components: {
     LeftSidebar,
     TopBar,
-    Footer
+    FooterKrl
   },
   data: () => ({
     closeLeftSidebar: false,
@@ -31,7 +31,7 @@ export default defineComponent({
       <div class="content-app">
         <RouterView />
       </div>
-      <Footer/>
+      <FooterKrl/>
     </div>
   </div>
 </template>

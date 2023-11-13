@@ -10,9 +10,8 @@ import {Modals} from "@/stores/modal";
 import InputSingle from "@/components/InputSingleTemplate.vue";
 import {confirmCode, generateAndSendCodePerEmail, recoverPassword, signIn} from "@/services/authentication_service";
 import type {RequestRecoverPassword} from "@/interfaces";
+import { useRouter } from "vue-router";
 
-const not = Notifications()
-const modal = Modals()
 export default defineComponent({
   components: {
     Lock,
@@ -21,6 +20,8 @@ export default defineComponent({
     InputSingle
   },
   data: (): any => ({
+    router: useRouter(),
+    not: undefined,
     passwordVisible: false,
     form: {
       email: '',
@@ -103,16 +104,16 @@ export default defineComponent({
               cellphone: res.data['cellphone'],
               token_api: res.data['token'],
             })
-            not.set({message: `Bem-vindo ${res.data['name']}!`, variant: 'success'})
-            this.$router.push({ name: 'home' })
+            this.not?.set({message: `Bem-vindo ${res.data['name']}!`, variant: 'success'})
+            this.router.replace('/dashboard')
           } else {
-            not.set({message: 'Ocorre algum erro, tente novamente', variant: 'danger'})
+            this.not?.set({message: 'Ocorre algum erro, tente novamente', variant: 'danger'})
           }
         }).catch((err) => {
           if (err.response) {
-            not.set({message: err.response.data, variant: 'danger'})
+            this.not?.set({message: err.response.data, variant: 'danger'})
           } else {
-            not.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
+            this.not?.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
           }
         })
       }
@@ -150,7 +151,7 @@ export default defineComponent({
       this.recoverPassword.loadingBtns = true
       await generateAndSendCodePerEmail({ email: this.recoverPassword.email })
       .then((res) => {
-        not.set({message: res.data, variant: 'success'})
+        this.not?.set({message: res.data, variant: 'success'})
         this.recoverPassword.loadingBtns = false
         this.recoverPassword.tabSelected = 1
         this.recoverPassword.title = 'Validar código'
@@ -160,9 +161,9 @@ export default defineComponent({
       .catch((err) => {
         this.recoverPassword.loadingBtns = false
         if (err.response) {
-          not.set({message: err.response.data, variant: 'danger'})
+          this.not?.set({message: err.response.data, variant: 'danger'})
         } else {
-          not.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'danger'})
+          this.not?.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'danger'})
         }
       })
     },
@@ -172,7 +173,7 @@ export default defineComponent({
       const code: string = `${c[0].value}${c[1].value}${c[2].value}${c[4].value}${c[5].value}${c[6].value}${c[7].value}`
       await confirmCode({ email: this.recoverPassword.email, code_recovery: code })
       .then((res) => {
-        not.set({message: res.data, variant: 'success'})
+        this.not?.set({message: res.data, variant: 'success'})
         this.recoverPassword.loadingBtns = false
         this.recoverPassword.tabSelected = 2
         this.recoverPassword.title = 'Redefinir senha'
@@ -182,13 +183,14 @@ export default defineComponent({
       .catch((err) => {
         this.recoverPassword.loadingBtns = false
         if (err.response) {
-          not.set({message: err.response.data, variant: 'danger'})
+          this.not?.set({message: err.response.data, variant: 'danger'})
         } else {
-          not.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'danger'})
+          this.not?.set({message: 'Ocorreu um erro na transmissão dos dados.', variant: 'danger'})
         }
       })
     },
     closeModalRecoverPassword() {
+      const modal = Modals()
       modal.hide('recover-password-hide')
       this.recoverPassword.email = ''
       this.recoverPassword.title = 'Recuperar senha'
@@ -255,10 +257,11 @@ export default defineComponent({
       if (errors === 0) {
         await this.confirmationCode()
       } else {
-        not.set({ message: 'Por favor, insira o código completo.', variant: 'danger'})
+        this.not?.set({ message: 'Por favor, insira o código completo.', variant: 'danger'})
       }
     },
     async finishRecoverPassword() {
+      const modal = Modals()
       let reqUnfulfilled: number = 0
       let passwordConfirmOk: boolean = true
 
@@ -303,14 +306,14 @@ export default defineComponent({
         }
         recoverPassword(body)
         .then(res => {
-          not.set({message: res.data, variant: 'success'})
+          this.not?.set({message: res.data, variant: 'success'})
           modal.hide('recover-password-hide')
         })
         .catch(err => {
           if (err.response) {
-            not.set({message: err.response.data, variant: 'danger'})
+            this.not?.set({message: err.response.data, variant: 'danger'})
           } else {
-            not.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
+            this.not?.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
           }
         })
       }
@@ -340,7 +343,7 @@ export default defineComponent({
       }
     },
     codeExpired() {
-      not.set({ message: 'Código expirado! Tente novamente.', variant: 'danger', duration: 15000})
+      this.not?.set({ message: 'Código expirado! Tente novamente.', variant: 'danger', duration: 15000})
       this.closeModalRecoverPassword()
     },
     startTimeInsertCode() {
@@ -426,6 +429,9 @@ export default defineComponent({
   },
   beforeUnmount() {
     this.clearTimeInsertCode()
+  },
+  mounted() {
+    this.not = Notifications()
   },
   watch: {
     'form.email': function(email: string) {
