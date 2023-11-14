@@ -121,8 +121,8 @@ onMounted(async () => {
               </div>
             </div>
             <div class="header-menu-suffix">
-              <div class="font-size-14px text-white">NOME DO USUÁRIO AQUI</div>
-              <div class="font-size-12px text-white">função/cargo</div>
+              <div class="font-size-14px text-white">{{ s?.user?.name }}</div>
+              <div class="font-size-12px text-white">{{ s?.user?.role }}</div>
             </div>
           </div>
           <router-link :to="{ name: 'my-data' }" class="menu-item">

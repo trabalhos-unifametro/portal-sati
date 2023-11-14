@@ -23,6 +23,7 @@ export default defineComponent({
     router: useRouter(),
     not: undefined,
     passwordVisible: false,
+    loadingBtnLogin: false,
     form: {
       email: '',
       password: ''
@@ -91,6 +92,7 @@ export default defineComponent({
     async logIn() {
       const newSession = session()
       if (this.validateForm()) {
+        this.loadingBtnLogin = true
         await signIn({
           email: this.form.email,
           password: this.form.password
@@ -106,7 +108,9 @@ export default defineComponent({
             })
             this.not?.set({message: `Bem-vindo ${res.data['name']}!`, variant: 'success'})
             this.router.replace('/dashboard')
+            this.loadingBtnLogin = false
           } else {
+            this.loadingBtnLogin = false
             this.not?.set({message: 'Ocorre algum erro, tente novamente', variant: 'danger'})
           }
         }).catch((err) => {
@@ -115,6 +119,7 @@ export default defineComponent({
           } else {
             this.not?.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
           }
+          this.loadingBtnLogin = false
         })
       }
     },
@@ -531,7 +536,10 @@ export default defineComponent({
               Esqueceu a senha ?
             </a>
           </div>
-          <button type="submit" class="btn btn-primary font-size-20px w-100 mb-4 mt-4">Entrar</button>
+          <button :type="loadingBtnLogin ? 'button' : 'submit'" :disabled="loadingBtnLogin" class="btn btn-primary font-size-20px w-100 mb-4 mt-4">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true" v-if="loadingBtnLogin"></span>
+            <span v-else>Entrar</span>
+          </button>
         </form>
         <!-- Modal Recover Password -->
         <div class="modal fade" id="recover-password" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="recover-password" aria-hidden="true">
