@@ -10,6 +10,7 @@ import {capitalize, formatCPF, formatDate, isFilled} from "@/utils";
 import {getListStatus} from "@/services/status_service";
 import type {ResponsePatient, ResponseTotalizatorsPatient, Status} from "@/interfaces";
 import {SelectedNotification} from "@/stores/notifications";
+import {Loading} from "@/stores/loading";
 
 export default defineComponent({
   components: {InputTemplate, Card, DataTable, Pagination},
@@ -44,7 +45,8 @@ export default defineComponent({
       hospitalized_patients: 0,
       waiting_patients: 0
     },
-    searching: false
+    searching: false,
+    load: Loading()
   }),
   methods: {
     async listPatients(filters="") {
@@ -154,9 +156,11 @@ export default defineComponent({
     await this.listStatus()
   },
   async mounted() {
+    this.load.show()
     await this.getTotalizators()
     await this.listPatients()
     this.searching = false
+    this.load.hide()
   }
 });
 

@@ -8,6 +8,7 @@ import Download from 'vue-material-design-icons/Download.vue'
 import {getMedicalRecordByID} from "@/services/medical_record_service";
 import type {ResponseMedicalRecord} from "@/interfaces";
 import {formatDate, formatTelephone} from "@/utils";
+import {Loading} from "@/stores/loading";
 
 const pdf = new jsPDF('l', 'pt', [1450, 1020])
 export default defineComponent({
@@ -38,7 +39,8 @@ export default defineComponent({
       occupation: "",
       limitation: "",
       allergy: ""
-    }
+    },
+    load: Loading()
   }),
   watch: {
     'medicalRecord.telephone': function(tel: string) {
@@ -143,7 +145,9 @@ export default defineComponent({
     }
   },
   async mounted() {
+    this.load.show()
     await this.medicalRecordFindByID()
+    this.load.hide()
   }
 })
 </script>

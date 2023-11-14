@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination.vue";
 import {getListPatientsByUnit, getTotalizatorsUnits} from "@/services/unit_service";
 import type {ResponsePatientByUnit, ResponseUnitTotalizators} from "@/interfaces";
 import {formatDate, isFilled} from "@/utils";
+import {Loading} from "@/stores/loading";
 
 export default defineComponent({
   components: {InputTemplate, Card, DataTable, Pagination},
@@ -38,7 +39,8 @@ export default defineComponent({
       qtdPatients: 0,
       vacancies: 0
     },
-    searching: false
+    searching: false,
+    load: Loading()
   }),
   methods: {
     async getTotalizators(filters="") {
@@ -126,9 +128,11 @@ export default defineComponent({
     }
   },
   async mounted() {
+    this.load.show()
     await this.getTotalizators()
     await this.getListPatientsByUnit()
     this.searching = false
+    this.load.hide()
   }
 });
 

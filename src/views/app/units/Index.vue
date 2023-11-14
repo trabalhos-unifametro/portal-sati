@@ -7,6 +7,7 @@ import {dashboardTotalizatorsUnits} from "@/services/dashboard_service";
 import type {ResponseDashboardTotalizatorsUnits, ResponseUnit} from "@/interfaces";
 import {getListUnits} from "@/services/unit_service";
 import {isFilled} from "@/utils";
+import {Loading} from "@/stores/loading";
 
 export default defineComponent({
   components: {InputTemplate, Card, CardUnit},
@@ -25,7 +26,8 @@ export default defineComponent({
       withVacancies: 0,
       noVacancy: 0,
     },
-    searching: false
+    searching: false,
+    load: Loading()
   }),
   methods: {
     async getTotalizators(filters="") {
@@ -95,8 +97,10 @@ export default defineComponent({
     }
   },
   async mounted() {
+    this.load.show()
     await this.getTotalizators()
     await this.getListUnits()
+    this.load.hide()
   }
 })
 </script>

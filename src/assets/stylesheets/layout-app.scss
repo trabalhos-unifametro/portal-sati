@@ -324,6 +324,31 @@
       overflow: hidden;
       padding: 30px 45px;
       min-height: calc(100vh - 180px);
+
+      .loading-full-screen {
+        display: none;
+        z-index: -1;
+      }
+
+      &.loading {
+        * {
+          overflow: hidden;
+        }
+
+        .loading-full-screen {
+          display: flex;
+          justify-content: center;
+          align-items: start;
+          background-color: rgba(0,0,0,0.6);
+          z-index: 999;
+          position: absolute;
+          left: 0;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          padding-top: 400px;
+        }
+      }
     }
 
     .footer {

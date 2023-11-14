@@ -192,6 +192,8 @@ export default defineComponent({
     closeModalRecoverPassword() {
       const modal = Modals()
       modal.hide('recover-password-hide')
+      this.recoverPassword.newPasswordVisible = false
+      this.recoverPassword.confirmNewPasswordVisible = false
       this.recoverPassword.email = ''
       this.recoverPassword.title = 'Recuperar senha'
       this.recoverPassword.btnCancel = 'Cancelar'
@@ -210,6 +212,8 @@ export default defineComponent({
         { error: false, value: '' },
       ]
       this.recoverPassword.tabSelected = 0
+      this.recoverPassword.confirmNewPassword = ""
+      this.recoverPassword.newPassword = ""
     },
     backRecoverPasswordTabs() {
       switch (this.recoverPassword.tabSelected) {
@@ -297,6 +301,7 @@ export default defineComponent({
       }
 
       if (reqUnfulfilled === 0 && passwordConfirmOk) {
+        this.recoverPassword.loadingBtns = true
         const c: Array<any> = this.recoverPassword.inputCode
         const body: RequestRecoverPassword = {
           email: this.recoverPassword.email,
@@ -308,6 +313,7 @@ export default defineComponent({
         .then(res => {
           this.not?.set({message: res.data, variant: 'success'})
           modal.hide('recover-password-hide')
+          this.recoverPassword.loadingBtns = false
         })
         .catch(err => {
           if (err.response) {
@@ -315,6 +321,7 @@ export default defineComponent({
           } else {
             this.not?.set({message: 'Ocorre um erro, tente novamente', variant: 'danger'})
           }
+          this.recoverPassword.loadingBtns = false
         })
       }
     },
@@ -473,7 +480,6 @@ export default defineComponent({
 </script>
 
 <template>
-<!--  <img src="/src/assets/images/sati-logo.png" class="position-absolute logo-sate" alt="S.A.T.I"/>-->
   <div class="d-flex justify-content-center align-items-center w-100 h-100 background-login">
     <div class="card card-template w-400px">
       <div class="card-body">
@@ -661,8 +667,7 @@ export default defineComponent({
                   :disabled="recoverPassword.loadingBtns"
                 >
                   <span v-if="recoverPassword.loadingBtns">
-                    <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
-                    Aguarde...
+                    {{ recoverPassword.btnCancel }}
                   </span>
                   <span v-else>
                     {{ recoverPassword.btnCancel }}
@@ -675,7 +680,7 @@ export default defineComponent({
                   :disabled="recoverPassword.loadingBtns"
                 >
                   <span v-if="recoverPassword.loadingBtns">
-                    <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                     Aguarde...
                   </span>
                   <span v-else>

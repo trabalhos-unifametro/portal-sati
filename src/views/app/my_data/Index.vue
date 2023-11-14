@@ -8,6 +8,7 @@ import {updateUser} from "@/services/authentication_service";
 import {emailsIsNotValid} from "@/utils";
 import {Notifications} from "@/stores/notifications";
 import InputTemplate from "@/components/InputTemplate.vue";
+import {Loading} from "@/stores/loading";
 
 export default defineComponent({
   components: { Card, InputTemplate },
@@ -28,7 +29,8 @@ export default defineComponent({
         message: ''
       },
     },
-    loadingBtn: false
+    loadingBtn: false,
+    load: Loading()
   }),
   methods: {
     revertChanges() {
@@ -108,8 +110,10 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.load.show()
     const sessionStorage = session()
     this.user = sessionStorage.user
+    this.load.hide()
   }
 })
 </script>

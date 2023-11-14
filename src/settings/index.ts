@@ -1,5 +1,7 @@
 const versionApi: string = 'v1';
-export const baseUrl: string = `http://localhost:5000/api/${versionApi}`;
+const hostname: string = window.location.hostname
+
+export const baseUrl: string = `http://${hostname}:5000/api/${versionApi}`;
 
 // AUTHENTICATION SERVICE ====================================================
 export const routeSignIn: string = '/auth/signin';

@@ -7,6 +7,7 @@ import type {ChangePassword} from "@/interfaces";
 import {session} from "@/stores/session";
 import {containsLowercase, containsNumbers, containsSpecialChars, containsUppercase, isFilled} from "@/utils";
 import {Notifications} from "@/stores/notifications";
+import {Loading} from "@/stores/loading";
 
 export default defineComponent({
   components: { Card, InputTemplate },
@@ -41,7 +42,8 @@ export default defineComponent({
         message: ''
       },
     },
-    loadingBtn: false
+    loadingBtn: false,
+    load: Loading()
   }),
   methods: {
     clearFieldsAndErrors() {
@@ -184,8 +186,10 @@ export default defineComponent({
     }
   },
   mounted() {
+    this.load.show()
     const sessionStorage = session()
     this.user = sessionStorage.user
+    this.load.hide()
   }
 })
 </script>

@@ -3,16 +3,21 @@ import {defineComponent} from 'vue'
 import { Tooltip } from 'bootstrap'
 import LeftSidebar from "@/components/base/LeftSidebar.vue";
 import TopBar from "@/components/base/TopBar.vue";
-import FooterKrl from "@/components/base/Footer.vue";
+import FooterTemplate from "@/components/base/Footer.vue";
+import { Loading } from "@/stores/loading";
+import Card from "@/components/Card.vue";
 
 export default defineComponent({
   components: {
+    // eslint-disable-next-line vue/no-unused-components
+    Card,
     LeftSidebar,
     TopBar,
-    FooterKrl
+    FooterTemplate
   },
   data: () => ({
     closeLeftSidebar: false,
+    load: Loading()
   }),
   mounted() {
     new Tooltip(document.body, {
@@ -28,10 +33,13 @@ export default defineComponent({
     <LeftSidebar v-model="closeLeftSidebar"/>
     <TopBar/>
     <div class="app">
-      <div class="content-app">
+      <div class="content-app" :class="{ 'loading': load.loading }">
+        <div class="loading-full-screen text-white">
+          <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status"></div>
+        </div>
         <RouterView />
       </div>
-      <FooterKrl/>
+      <FooterTemplate/>
     </div>
   </div>
 </template>

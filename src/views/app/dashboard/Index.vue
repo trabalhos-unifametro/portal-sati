@@ -16,7 +16,7 @@ import type {
   ResponseDashboardTotalizatorsPatients,
   ResponseDashboardTotalizatorsUnits
 } from "@/interfaces";
-
+import {Loading} from "@/stores/loading";
 
 export default defineComponent({
   components: {
@@ -140,7 +140,8 @@ export default defineComponent({
       total: 0,
       withinPeriod: 0,
       outsidePeriod: 0,
-    }
+    },
+    load: Loading()
   }),
   methods: {
     async getTotalizatorsUnits() {
@@ -202,11 +203,13 @@ export default defineComponent({
     },
   },
   async mounted() {
+    this.load.show()
     await this.getTotalizatorsUnits()
     await this.getTotalizatorsPatients()
     await this.getGraphicUnits()
     await this.getGraphicPatients()
     await this.getGraphicMonthlyOccupation()
+    this.load.hide()
   },
 })
 </script>
