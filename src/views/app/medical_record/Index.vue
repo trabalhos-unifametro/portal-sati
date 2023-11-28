@@ -6,7 +6,6 @@ import {jsPDF} from "jspdf";
 import Printer from 'vue-material-design-icons/Printer.vue'
 import Download from 'vue-material-design-icons/Download.vue'
 import {getMedicalRecordByID} from "@/services/medical_record_service";
-import type {ResponseMedicalRecord} from "@/interfaces";
 import {formatDate, formatTelephone} from "@/utils";
 import {Loading} from "@/stores/loading";
 
@@ -52,7 +51,7 @@ export default defineComponent({
   methods: {
     downloadMedicalRecord(printOrDownload = 'print') {
       const body: string | HTMLElement = document.getElementById("doc-pdf") ?? 'Documento não encontrado'
-      this.imageToUri('/src/assets/images/logo.png', function(uri: string) {
+      this.imageToUri(function(uri: string) {
         if (uri.length > 0) {
           pdf.html(body, {
             callback: function (doc) {
@@ -98,12 +97,13 @@ export default defineComponent({
         }
       });
     },
-    imageToUri(url: string, callback: Function) {
+    async imageToUri(callback: Function) {
       const canvas: any = document.createElement('canvas');
       const ctx: any = canvas.getContext('2d');
       const base_image: any = new Image();
+      const image: any = await import('@/assets/images/logo.png');
 
-      base_image.src = url;
+      base_image.src = image.default;
       base_image.onload = function() {
         canvas.width = base_image.width;
         canvas.height = base_image.height;

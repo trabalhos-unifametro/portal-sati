@@ -24,8 +24,8 @@ export default defineComponent({
     headers: [
       { label: 'Cód. Internação', key: 'hospitalization_code' },
       { label: 'Nome', key: 'patient_name' },
-      { label: 'Tempo de internação geral', key: 'expected_hospitalization_time' },
-      { label: 'Tempo de internação atual', key: 'current_hospitalization_time' },
+      { label: 'Entrada na UTI', key: 'created_at' },
+      { label: 'Previsão de alta', key: 'expected_hospitalization_time' },
       { label: 'Situação', key: 'situation' },
       { label: 'Prontuário', key: 'medical_record_id' },
       { label: 'Detalhes', key: 'details' },
@@ -68,6 +68,7 @@ export default defineComponent({
             patient_id: patient.patient_id,
             hospitalization_code: patient.hospitalization_code,
             patient_name: patient.patient_name,
+            created_at: formatDate(patient.created_at),
             expected_hospitalization_time: formatDate(patient.expected_hospitalization_time),
             current_hospitalization_time: formatDate(patient.current_hospitalization_time),
             situation_id: patient.situation_id,

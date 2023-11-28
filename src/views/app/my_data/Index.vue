@@ -16,8 +16,8 @@ export default defineComponent({
   data: (): any => ({
     user: undefined,
     form: {
-      email: sessionStorage.user?.email,
-      cellphone: sessionStorage.user?.cellphone
+      email: "",
+      cellphone: ""
     },
     errors: {
       email: {
@@ -39,6 +39,7 @@ export default defineComponent({
     },
     async updateData() {
       const not = Notifications()
+      const sessionStorage = session()
       if (this.validateForm() && !this.loadingBtn) {
         this.loadingBtn = true
         let newUser: UserSession = this.user
@@ -113,6 +114,8 @@ export default defineComponent({
     this.load.show()
     const sessionStorage = session()
     this.user = sessionStorage.user
+    this.form.email = this.user?.email
+    this.form.cellphone = this.user?.cellphone
     this.load.hide()
   }
 })

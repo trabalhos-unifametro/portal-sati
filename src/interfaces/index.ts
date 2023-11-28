@@ -86,6 +86,7 @@ export interface ResponsePatientByUnit {
   unit_id:                       number
   hospitalization_code:          number
   patient_name:                  string
+  created_at:                    string
   expected_hospitalization_time: string
   current_hospitalization_time:  string
   situation_id:                  number
@@ -146,6 +147,7 @@ export interface ResponsePatient {
   unit_id:                       number
   hospitalization_code:          number
   patient_name:                  string
+  created_at:                    string
   expected_hospitalization_time: string
   current_hospitalization_time:  string
   situation_id:                  number
