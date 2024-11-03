@@ -1,0 +1,1 @@
+import{d as o,_ as n,r as t,o as s,c as a,a as c}from"./index-51662e64.js";const r=o({name:"IndexAuth"}),_={class:"w-100 h-100"};function p(d,i,m,f,u,l){const e=t("RouterView");return s(),a("main",_,[c(e)])}const h=n(r,[["render",p]]);export{h as default};
